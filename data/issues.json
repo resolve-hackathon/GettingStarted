@@ -1,0 +1,12 @@
+[
+  {"id":"GH-182","number":182,"component":"sync","state":"open","affects_version":"3.8.1","terms":["sync","stopped","stuck"],"workaround":"In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.","url":"https://example.invalid/cloudnest/issues/182"},
+  {"id":"GH-170","number":170,"component":"exports","state":"closed","affects_version":"3.7.3","terms":["blank"],"workaround":"Reset the date filter.","url":"https://example.invalid/cloudnest/issues/170"},
+  {"id":"GH-175","number":175,"component":"upload","state":"closed","affects_version":"3.8.1","terms":["crash"],"workaround":"Upgrade to the patched client.","url":"https://example.invalid/cloudnest/issues/175"},
+  {"id":"GH-180","number":180,"component":"search","state":"open","affects_version":"3.7.4","terms":["unicode"],"workaround":"Search using the exact filename.","url":"https://example.invalid/cloudnest/issues/180"},
+  {"id":"GH-181","number":181,"component":"sharing","state":"closed","affects_version":"3.7.0","terms":["invite"],"workaround":"Request a new invitation.","url":"https://example.invalid/cloudnest/issues/181"},
+  {"id":"GH-183","number":183,"component":"notifications","state":"open","affects_version":"3.8.0","terms":["duplicate"],"workaround":"Disable the duplicate desktop notification rule.","url":"https://example.invalid/cloudnest/issues/183"},
+  {"id":"GH-184","number":184,"component":"exports","state":"open","affects_version":"3.8.1","terms":["timezone"],"workaround":"Select UTC in the report timezone selector before export.","url":"https://example.invalid/cloudnest/issues/184"},
+  {"id":"GH-185","number":185,"component":"login","state":"closed","affects_version":"3.7.4","terms":["spinner"],"workaround":"Restart the client.","url":"https://example.invalid/cloudnest/issues/185"},
+  {"id":"GH-186","number":186,"component":"upload","state":"open","affects_version":"3.7.4","terms":["filename"],"workaround":"Remove trailing spaces from the filename before retrying.","url":"https://example.invalid/cloudnest/issues/186"},
+  {"id":"GH-187","number":187,"component":"sync","state":"closed","affects_version":"3.7.4","terms":["paused"],"workaround":"Resume sync in Settings.","url":"https://example.invalid/cloudnest/issues/187"}
+]
