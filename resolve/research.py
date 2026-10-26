@@ -90,7 +90,7 @@ def seed_snapshot(data: Path, database: Path) -> None:
             row["body"] = body.strip()
             row["steps"] = re.findall(r"^\d+\. (.+)$", body, re.MULTILINE)
             row["url"] = (
-                "https://github.com/resolve-hackathon/GettingStarted/blob/main/"
+                "https://github.com/resolve-hackathon/resolve-agent/blob/main/"
                 f"data/kb/{path.name}"
             )
             connection.execute("INSERT INTO kb VALUES (?, ?, ?)", (

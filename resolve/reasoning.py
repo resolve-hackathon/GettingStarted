@@ -21,6 +21,7 @@ COMPONENTS = {
     "notifications": {"notification", "notifications", "alerts"},
     "search": {"search", "index", "indexing"},
     "sharing": {"share", "sharing", "invite", "invitation"},
+    "appearance": {"purple", "violet"},
 }
 
 
