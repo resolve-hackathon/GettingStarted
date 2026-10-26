@@ -48,7 +48,7 @@ def main() -> int:
     commands.add_parser("seed", help="Rebuild the local fallback snapshot")
     demo = commands.add_parser("demo", help="Run all four outcomes without credentials")
     demo.add_argument("--trace", action="store_true")
-    commands.add_parser("eval", help="Evaluate the seeded offline questions")
+    commands.add_parser("eval", help="Evaluate the 10 seeded offline questions")
     ask = commands.add_parser("ask", help="Investigate a single support report")
     ask.add_argument("message")
     ask.add_argument("--customer-id", required=True)

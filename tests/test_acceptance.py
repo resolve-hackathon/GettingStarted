@@ -97,7 +97,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("/issues/200", text)
 
     def test_unknown_retries_once_and_posts_evidence_packet(self):
-        state = self.ask("The workspace plays a trumpet at noon", "c-004")
+        state = self.ask("The workspace turns purple at midnight", "c-004")
         self.assertEqual(state.action, Action.ESCALATE)
         self.assertFalse(state.verified)
         self.assertEqual(state.retries, 1)
@@ -111,7 +111,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("could not verify a fix", text)
         self.assertEqual(result["status"], "completed")
 
-    def test_all_eval_cases(self):
+    def test_all_ten_eval_cases(self):
         cases = json.loads((ROOT / "data/eval_cases.json").read_text())
         for case in cases:
             with self.subTest(case["id"]):
@@ -270,10 +270,10 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(state.hypothesis.action, Action.LINK_ISSUE)
         self.assertEqual(verify_structure(state), [])
 
-    def test_seed_has_fifty_accounts_eleven_articles_and_ten_issues(self):
+    def test_seed_has_fifty_accounts_ten_articles_and_ten_issues(self):
         import sqlite3
         with sqlite3.connect(self.database) as connection:
-            for table, count in (("accounts", 50), ("kb", 11), ("issues", 10), ("releases", 6)):
+            for table, count in (("accounts", 50), ("kb", 10), ("issues", 10), ("releases", 6)):
                 self.assertEqual(connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0], count)
 
 

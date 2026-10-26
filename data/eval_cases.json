@@ -4,11 +4,9 @@
   {"id":"kb-fix","customer_id":"c-002","message":"Why is my export blank?","expected_action":"post_fix"},
   {"id":"kb-paraphrase","customer_id":"c-002","message":"The exported CSV is empty","expected_action":"post_fix"},
   {"id":"new-bug","customer_id":"c-003","message":"I can reproduce an upload crash after the 3.8.2 update","expected_action":"open_issue"},
-  {"id":"no-evidence","customer_id":"c-004","message":"My workspace plays a trumpet at noon","expected_action":"escalate"},
+  {"id":"no-evidence","customer_id":"c-004","message":"My workspace turns purple at midnight","expected_action":"escalate"},
   {"id":"missing-account","customer_id":"c-missing","message":"The export is blank","expected_action":"escalate"},
   {"id":"wrong-kb-version","customer_id":"c-003","message":"My export is blank on this version","expected_action":"escalate"},
   {"id":"password-fix","customer_id":"c-002","message":"I forgot my login password and need a reset","expected_action":"post_fix"},
-  {"id":"human-request","customer_id":"c-031","message":"Please get a human to help with sync","expected_action":"escalate"},
-  {"id":"purple-at-midnight","customer_id":"c-004","message":"My workspace turns purple at midnight","expected_action":"post_fix"},
-  {"id":"purple-at-midnight-paraphrase","customer_id":"c-002","message":"My workspace changes to violet every night at 12am","expected_action":"post_fix"}
+  {"id":"human-request","customer_id":"c-031","message":"Please get a human to help with sync","expected_action":"escalate"}
 ]

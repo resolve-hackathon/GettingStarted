@@ -53,7 +53,7 @@ class ModelClaimPointerTests(unittest.TestCase):
         cases = [("c-031", "c-031", "Desktop sync stopped after the update", "link_issue"),
                  ("c-002", "c-002", "Why is my export blank?", "post_fix"),
                  ("c-003", "c-003", "I can reproduce an upload crash after 3.8.2", "open_issue"),
-                 ("c-004", "c-004", "My workspace plays a trumpet at noon", "escalate")]
+                 ("c-004", "c-004", "My workspace turns purple at midnight", "escalate")]
         for customer, case, message, expected in cases:
             with self.subTest(case=case):
                 self.assertEqual(self.run_case(customer, case, message).action.value, expected)

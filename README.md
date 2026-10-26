@@ -15,8 +15,8 @@ or third-party packages are needed for the CLI, demo, evaluation, or tests. Run
 these from this repository's root; on Windows, use `py` in place of `python3`:
 
 ```bash
-git clone https://github.com/resolve-hackathon/resolve-agent.git
-cd resolve-agent
+git clone https://github.com/resolve-hackathon/GettingStarted.git
+cd GettingStarted
 python3 -m resolve demo --trace
 python3 -m resolve eval
 python3 -m unittest discover -s tests -v
@@ -34,10 +34,9 @@ python3 -m resolve ask --customer-id c-031 "Desktop sync stopped after the updat
 python3 -m resolve ask --customer-id c-002 "Why is my export blank?"
 python3 -m resolve ask --customer-id c-003 "I can reproduce an upload crash after 3.8.2"
 python3 -m resolve ask --customer-id c-004 "My workspace turns purple at midnight"
-python3 -m resolve ask --customer-id c-004 "My workspace plays a trumpet at noon"
 ```
 
-Expected actions: `link_issue`, `post_fix`, `open_issue`, `post_fix`, `escalate`.
+Expected actions: `link_issue`, `post_fix`, `open_issue`, `escalate`.
 Dry-run results have `status: dry_run`, contain the intended payload, and return
 no invented remote message IDs or issue numbers. They do not contact Discord or
 GitHub. GH-1 is a real open issue in the demo product repository,
@@ -57,8 +56,8 @@ refuses to comment on.
 | Retry | At most one additional research pass using verification gaps and symptom text |
 | State/log | One inspectable JSON object per question; Discord runs append JSONL locally |
 | Duplicate protection | Live actions are journaled by question ID; uncertain/failed POSTs are not automatically replayed |
-| Seed data | 50 synthetic accounts, 11 authored KB articles, 6 releases, 10 issue fixtures |
-| Checks | Four end-to-end outcome tests, twelve offline evaluation cases, and failure/verification tests |
+| Seed data | 50 synthetic accounts, 10 authored KB articles, 6 releases, 10 issue fixtures |
+| Checks | Four end-to-end outcome tests, ten offline evaluation cases, and failure/verification tests |
 
 All non-escalation actions must pass the verifier with confidence at least 0.6.
 Replies use exact remedies from source rows. A new bug requires an explicit
@@ -107,16 +106,6 @@ For a demo user, replace that user's synthetic `discord_id` in
 Unmapped users are escalated instead of accessing another account. Dry-run bot
 mode posts clearly marked previews in Discord but performs no GitHub actions or
 human handoff.
-
-The purple-at-midnight report is covered by [KB-011](data/kb/011-purple-workspace-midnight.md),
-an authored fictional CloudNest scenario about a scheduled appearance change.
-Ask `!resolve My workspace turns purple at midnight` (or @mention the bot).
-It checks the customer's client version and replies with the theme-schedule
-steps and the KB source. It does not create a GitHub issue for this known fix.
-After pulling this change, run `python3 -m resolve seed` and restart a local-mode
-bot. If using `RESOLVE_RESEARCH=zetaris`, also refresh the registered KB source
-with the new article; rebuilding SQLite alone does not update Zetaris. See
-[KB refresh instructions](docs/INTEGRATIONS.md#refreshing-the-kb-source).
 
 Live mode additionally requires `GITHUB_TOKEN`, `GITHUB_REPOSITORY`,
 `DISCORD_ESCALATION_CHANNEL_ID`, and `RESOLVE_ALLOW_LIVE_ACTIONS=true`:
