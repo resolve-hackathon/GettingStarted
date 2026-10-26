@@ -57,6 +57,10 @@ class TaskState:
     action_result: dict[str, Any] = field(default_factory=dict)
     reply_text: str = ""
     events: list[dict[str, Any]] = field(default_factory=list)
+    # Meterless engines: H-MEM retrieval payload and World Model context payload.
+    memories: dict[str, Any] = field(default_factory=dict)
+    world_context: dict[str, Any] = field(default_factory=dict)
+    already_reported: bool = False
 
     def snapshot(self) -> dict[str, Any]:
         return asdict(self)

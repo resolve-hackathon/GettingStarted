@@ -55,13 +55,33 @@ No provider credentials or live inference were available during development.
 Official API reference: [NVIDIA chat completion interface](https://docs.api.nvidia.com/nim/reference/nvidia-llama-3_1-nemotron-ultra-253b-v1-infer).
 This link documents the interface; it is not a requirement to use that model.
 
-## Meterless: explicit state pattern only
+## Meterless: World Model and H-MEM engines mounted
 
-`TaskState` is a serializable shared object. The role prompts live in
-`resolve/reasoning.py`; `events` provide inspectable decisions and citations.
-There are no Meterless SDK, prompt-library, memory, or service calls yet. Confirm
-the event requirement, then map these seams to the actual service. Do not claim
-sponsor usage from the local dataclass alone. H-MEM is deferred as a stretch goal.
+Two of the Meterless agent engines are implemented as in-process services, per
+the Meterless guides (reference architectures, not a package).
+
+**World Model** (`resolve/world_model.py`): `WorldStoreService`,
+`IngestPipelineService`, `ContextBuilderService`. Every evidence row becomes an
+entity with provenance (`source`, `rowId`, `via` zetaris or local) and agent
+attribution (`agentId` = role, `runId` = question id, `taskId` = attempt).
+Typed relationships link customers, versions, components, issues and releases.
+Each role's decision is appended as an event. Ingest is idempotent per run.
+The context builder's structured payload, with its selection trace, is sent to
+the Nemotron hypothesis and verifier calls as `world`. Logs: `logs/world.jsonl`
+and `logs/run_manifest.jsonl` (which services are wired vs dormant).
+
+**H-MEM** (`resolve/memory.py`): `MemoryStoreService`, `MemoryRetrievalService`.
+Tiers: short_term (process), working and long_term (JSONL in
+`runtime/memory/`, warm-started each run). Mining uses the guide's no-model
+fallback: a direct summary per resolution. Retrieval is hybrid (keyword, tag,
+entity, layer, recency) with threshold 0.35 and top 5, returned with trace
+metadata and injected into the model context as `memories`. Behavioral effect:
+when memory shows this customer's report was already confirmed on an open
+issue (a completed live comment, never a dry run), Resolve answers without
+commenting on GitHub again. Audit: `logs/memory_audit.jsonl`.
+
+Not implemented: World Model enrichment, relationship queries and control
+plane; H-MEM dreaming, sleep and conflict resolution; Markovian.
 
 ## GitHub: live action handlers, snapshot research
 

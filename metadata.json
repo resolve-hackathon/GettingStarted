@@ -1,0 +1,66 @@
+{
+  "project": "Resolve",
+  "description": "Customer support resolution agent: investigates a Discord support report across four separate systems through Zetaris, decides with Nemotron, verifies every claim against a source row, then posts a fix, links or opens a GitHub issue, or escalates with an evidence packet.",
+  "track": "Solving Fragmented Intelligence",
+  "sponsor_technology": {
+    "zetaris": {
+      "used": true,
+      "where": [
+        "resolve/zetaris.py",
+        "sql/research_zetaris.sql",
+        "sql/identity_zetaris.sql",
+        "zetaris/register.sql",
+        "zetaris/load_postgres.sh"
+      ],
+      "how": "Accounts, KB, releases and GitHub issues are four separate datasources (four databases). The researcher sends one federated SQL statement through the Zetaris REST API; the query plan shows four scans with filters pushed down to each source.",
+      "evidence": [
+        "docs/evidence/zetaris_query_plan.txt",
+        "docs/evidence/live_run_zetaris_nemotron.txt"
+      ]
+    },
+    "meterless": {
+      "used": true,
+      "engines": {
+        "world_model": {
+          "where": "resolve/world_model.py, mounted in resolve/agent.py",
+          "services": [
+            "WorldStoreService",
+            "IngestPipelineService",
+            "ContextBuilderService"
+          ],
+          "how": "Every Zetaris row becomes a provenance-stamped entity (source, row id, via) with agent attribution (agentId = role, runId = question id), plus typed relationships (runs_version, affects, released_as, in_component). Each role's decision is an event. The context builder's structured payload, with selection trace, is what the Nemotron hypothesis and verifier calls receive.",
+          "logs": [
+            "logs/world.jsonl",
+            "logs/run_manifest.jsonl"
+          ]
+        },
+        "h_mem": {
+          "where": "resolve/memory.py, mounted in resolve/agent.py",
+          "services": [
+            "MemoryStoreService",
+            "MemoryRetrievalService"
+          ],
+          "how": "Each resolution is mined into tiered memory (long_term when verified, working when escalated) using the guide's no-model fallback. Before research, hybrid retrieval (keyword, tag, entity, layer, recency; threshold 0.35, top 5) injects prior resolutions into the model context. If this customer's report was already confirmed on an open issue, Resolve answers without posting a duplicate GitHub comment.",
+          "logs": [
+            "logs/memory_audit.jsonl"
+          ],
+          "not_implemented": [
+            "dreaming",
+            "sleep",
+            "conflict resolution"
+          ]
+        }
+      }
+    },
+    "nvidia": {
+      "used": true,
+      "model": "nvidia/nemotron-3-super-120b-a12b via build.nvidia.com (OpenAI-compatible)",
+      "where": "resolve/reasoning.py (CompatibleReasoner)",
+      "how": "Nemotron proposes the outcome and independently audits it; a hard verifier still checks every claim against source rows."
+    },
+    "cursor": {
+      "used": true,
+      "how": "TODO before submitting: describe how Cursor was used and add screenshots to docs/evidence. Do not leave this claim unverified."
+    }
+  }
+}

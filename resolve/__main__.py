@@ -20,7 +20,18 @@ def build_agent(database: Path, actions) -> Agent:
     if mode not in {"rules", "compatible"}:
         raise ValueError("RESOLVE_MODEL_MODE must be rules or compatible")
     reasoner = RulesReasoner() if mode == "rules" else CompatibleReasoner.from_env()
-    return Agent(make_researcher(database), reasoner, actions)
+    return Agent(make_researcher(database), reasoner, actions, *meterless_engines())
+
+
+def meterless_engines(log_dir=None, memory_dir=None):
+    """Mount the Meterless World Model and H-MEM engines (logs/ holds their JSONL evidence)."""
+    from .config import ROOT
+    from .memory import Memory
+    from .world_model import WorldModel
+
+    logs = log_dir or Path(os.getenv("RESOLVE_LOG_DIR", str(ROOT / "logs")))
+    memory = memory_dir or Path(os.getenv("RESOLVE_MEMORY_DIR", str(runtime_dir() / "memory")))
+    return WorldModel(logs, via=os.getenv("RESOLVE_RESEARCH", "local")), Memory(memory, logs)
 
 
 def print_state(state, trace: bool) -> None:
@@ -53,7 +64,10 @@ def main() -> int:
         with tempfile.TemporaryDirectory() as directory:
             database = Path(directory) / "demo.sqlite"
             seed_snapshot(data_dir(), database)
-            agent = Agent(SQLResearcher.local(database), RulesReasoner(), DryRunActions())
+            from .world_model import WorldModel
+
+            agent = Agent(SQLResearcher.local(database), RulesReasoner(), DryRunActions(),
+                          WorldModel(None))
             cases = json.loads((data_dir() / "eval_cases.json").read_text())
             if args.command == "demo":
                 for index in (0, 2, 4, 5):

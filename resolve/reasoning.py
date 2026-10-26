@@ -156,6 +156,9 @@ Choose an open version-matching issue first, then an applicable KB remedy.
 Opening a new issue requires a documented regression, matching regression_signals
 in the message, and no related open issue. An unrelated release is not proof.
 If sources do not support an action, return escalate with confidence 0.
+"world" is the shared World Model view of this run (entities, relationships,
+provenance). "memories" are prior resolutions from H-MEM: use them for context,
+but cite only evidence row ids, never memory ids.
 Never invent ids, URLs, claims, steps, customer IDs, or API calls."""
 
 VERIFIER_PROMPT = """Independently audit the proposed action against the supplied rows
@@ -204,6 +207,8 @@ class CompatibleReasoner:
                    "component": state.component,
                    "evidence": [{"id": e.id, **asdict(e)} for e in state.evidence],
                    "hypothesis": asdict(state.hypothesis), "gaps": state.gaps,
+                   "world": state.world_context,
+                   "memories": state.memories.get("memories", []),
                    "research_scope": {
                        "accounts": "the customer's own account row",
                        "kb": "KB articles for this component that apply to the client version",

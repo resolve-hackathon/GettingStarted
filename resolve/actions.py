@@ -30,6 +30,10 @@ def action_material(state: TaskState) -> tuple[str, dict]:
     if state.action == Action.POST_FIX:
         steps = "\n".join(f"{i}. {step}" for i, step in enumerate(selected.record["steps"], 1))
         return f"{steps}\n\n{citation}", {}
+    if state.action == Action.LINK_ISSUE and state.already_reported:
+        return (f"You reported this before, and it is still tracked as an open issue.\n"
+                f"{selected.record['workaround']}\n\n{citation}"), {
+            "number": selected.record["number"], "url": selected.record["url"], "comment": None}
     if state.action == Action.LINK_ISSUE:
         return f"{selected.record['workaround']}\n\n{citation}", {
             "number": selected.record["number"], "url": selected.record["url"],
@@ -117,11 +121,12 @@ class LiveActions:
                 issue = self.github.request("GET", f"{root}/issues/{number}")
                 if issue.get("state") != "open" or issue.get("html_url") != expected or "pull_request" in issue:
                     raise ValueError("Live issue is no longer an open issue in this repository")
-                receipt = self.github.request("POST", f"{root}/issues/{number}/comments",
-                                              {"body": payload["comment"]})
-                if not receipt.get("id"):
-                    raise ServiceError("GitHub did not confirm the comment")
-                self.receipts.append({"service": "github", "comment_id": receipt["id"]})
+                if payload["comment"] is not None:  # None: H-MEM says this report is already on the issue
+                    receipt = self.github.request("POST", f"{root}/issues/{number}/comments",
+                                                  {"body": payload["comment"]})
+                    if not receipt.get("id"):
+                        raise ServiceError("GitHub did not confirm the comment")
+                    self.receipts.append({"service": "github", "comment_id": receipt["id"]})
             elif state.action == Action.OPEN_ISSUE:
                 issue = self.github.request("POST", f"{root}/issues", payload)
                 number = issue.get("number")
