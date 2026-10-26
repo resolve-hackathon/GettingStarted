@@ -74,7 +74,7 @@ class Agent:
             state.action_result, state.reply_text = self.actions.execute(state)
         except (ServiceError, ValueError, OSError) as error:
             # Do not claim an issue, comment, or escalation exists if its API failed.
-            state.action_result = {"status": "failed", "error": type(error).__name__,
+            state.action_result = {"status": "failed", "error": type(error).__name__, "message": str(error)[:200],
                                    "receipts": getattr(error, "receipts", []),
                                    "detail": "Action was not confirmed; inspect service logs before retrying"}
             state.reply_text = "I could not confirm delivery. Please contact a support team member directly."
