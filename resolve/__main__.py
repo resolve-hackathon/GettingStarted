@@ -12,6 +12,7 @@ from .agent import Agent
 from .config import data_dir, load_env, runtime_dir
 from .reasoning import CompatibleReasoner, RulesReasoner
 from .research import SQLResearcher, seed_snapshot
+from .zetaris import make_researcher
 
 
 def build_agent(database: Path, actions) -> Agent:
@@ -19,7 +20,7 @@ def build_agent(database: Path, actions) -> Agent:
     if mode not in {"rules", "compatible"}:
         raise ValueError("RESOLVE_MODEL_MODE must be rules or compatible")
     reasoner = RulesReasoner() if mode == "rules" else CompatibleReasoner.from_env()
-    return Agent(SQLResearcher.local(database), reasoner, actions)
+    return Agent(make_researcher(database), reasoner, actions)
 
 
 def print_state(state, trace: bool) -> None:
