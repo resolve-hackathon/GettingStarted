@@ -1,0 +1,76 @@
+== Parsed Logical Plan ==
+'Union false, false
+:- 'Union false, false
+:  :- 'Union false, false
+:  :  :- 'Project [accounts AS source#749, 'a.row_id]
+:  :  :  +- 'Filter ('a.row_id = c-031)
+:  :  :     +- 'SubqueryAlias a
+:  :  :        +- 'UnresolvedRelation [accounts_src, accounts], [], false
+:  :  +- 'Project [unresolvedalias(kb, None), 'k.row_id]
+:  :     +- 'Filter ('k.component = sync)
+:  :        +- 'SubqueryAlias k
+:  :           +- 'UnresolvedRelation [kb_src, kb], [], false
+:  +- 'Project [unresolvedalias(releases, None), 'r.row_id]
+:     +- 'Filter ('r.component = sync)
+:        +- 'SubqueryAlias r
+:           +- 'UnresolvedRelation [releases_src, releases], [], false
++- 'Project [unresolvedalias(issues, None), 'i.row_id]
+   +- 'Filter ('i.component = sync)
+      +- 'SubqueryAlias i
+         +- 'UnresolvedRelation [issues_src, issues], [], false
+
+== Analyzed Logical Plan ==
+source: string, row_id: string
+Union false, false
+:- Union false, false
+:  :- Union false, false
+:  :  :- Project [accounts AS source#749, row_id#750]
+:  :  :  +- Filter (row_id#750 = c-031)
+:  :  :     +- SubqueryAlias a
+:  :  :        +- SubqueryAlias accounts
+:  :  :           +- LightningLogicalRelation[row_id#750,discord_id#751,client_version#752,last_working_version#753,payload#754] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ACCOUNTS_SRC),ACCOUNTS,accounts,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(discord_id,StringType,true),StructField(client_version,StringType,true),StructField(last_working_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+:  :  +- Project [kb AS kb#766, row_id#755]
+:  :     +- Filter (component#756 = sync)
+:  :        +- SubqueryAlias k
+:  :           +- SubqueryAlias kb
+:  :              +- LightningLogicalRelation[row_id#755,component#756,payload#757] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(KB_SRC),KB,kb,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+:  +- Project [releases AS releases#767, row_id#758]
+:     +- Filter (component#759 = sync)
+:        +- SubqueryAlias r
+:           +- SubqueryAlias releases
+:              +- LightningLogicalRelation[row_id#758,component#759,payload#760] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(RELEASES_SRC),RELEASES,releases,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
++- Project [issues AS issues#768, row_id#761]
+   +- Filter (component#762 = sync)
+      +- SubqueryAlias i
+         +- SubqueryAlias issues
+            +- LightningLogicalRelation[row_id#761,component#762,state#763,affects_version#764,payload#765] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ISSUES_SRC),ISSUES,issues,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(state,StringType,true),StructField(affects_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+
+== Optimized Logical Plan ==
+Union false, false
+:- Project [accounts AS source#749, row_id#750]
+:  +- Filter (isnotnull(row_id#750) AND (row_id#750 = c-031))
+:     +- LightningLogicalRelation[row_id#750,discord_id#751,client_version#752,last_working_version#753,payload#754] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ACCOUNTS_SRC),ACCOUNTS,accounts,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(discord_id,StringType,true),StructField(client_version,StringType,true),StructField(last_working_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+:- Project [kb AS kb#766, row_id#755]
+:  +- Filter (isnotnull(component#756) AND (component#756 = sync))
+:     +- LightningLogicalRelation[row_id#755,component#756,payload#757] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(KB_SRC),KB,kb,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+:- Project [releases AS releases#767, row_id#758]
+:  +- Filter (isnotnull(component#759) AND (component#759 = sync))
+:     +- LightningLogicalRelation[row_id#758,component#759,payload#760] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(RELEASES_SRC),RELEASES,releases,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
++- Project [issues AS issues#768, row_id#761]
+   +- Filter (isnotnull(component#762) AND (component#762 = sync))
+      +- LightningLogicalRelation[row_id#761,component#762,state#763,affects_version#764,payload#765] InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ISSUES_SRC),ISSUES,issues,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(state,StringType,true),StructField(affects_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9)
+
+== Physical Plan ==
+Union
+:- *(1) Project [accounts AS source#749, row_id#750]
+:  +- *(1) Filter (isnotnull(row_id#750) AND (row_id#750 = c-031))
+:     +- *(1) Scan InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ACCOUNTS_SRC),ACCOUNTS,accounts,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(discord_id,StringType,true),StructField(client_version,StringType,true),StructField(last_working_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9) ACCOUNTS_SRC.accounts[row_id#750] PushedFilters: [IsNotNull(row_id), EqualTo(row_id,c-031)], ReadSchema: struct<row_id:string>
+:- *(2) Project [kb AS kb#766, row_id#755]
+:  +- *(2) Filter (isnotnull(component#756) AND (component#756 = sync))
+:     +- *(2) Scan InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(KB_SRC),KB,kb,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9) KB_SRC.kb[row_id#755,component#756] PushedFilters: [IsNotNull(component), EqualTo(component,sync)], ReadSchema: struct<row_id:string,component:string>
+:- *(3) Project [releases AS releases#767, row_id#758]
+:  +- *(3) Filter (isnotnull(component#759) AND (component#759 = sync))
+:     +- *(3) Scan InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(RELEASES_SRC),RELEASES,releases,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9) RELEASES_SRC.releases[row_id#758,component#759] PushedFilters: [IsNotNull(component), EqualTo(component,sync)], ReadSchema: struct<row_id:string,component:string>
++- *(4) Project [issues AS issues#768, row_id#761]
+   +- *(4) Filter (isnotnull(component#762) AND (component#762 = sync))
+      +- *(4) Scan InsertableJDBCTableRelation(JDBCDataSourceConnection(JDBCDataSourceMeta(********(masked))),Some(public),Some(ISSUES_SRC),ISSUES,issues,List(JDBCRangePartition(None,0)),StructType(StructField(row_id,StringType,true),StructField(component,StringType,true),StructField(state,StringType,true),StructField(affects_version,StringType,true),StructField(payload,StringType,true)),None,None,org.apache.spark.sql.SQLContext@2bbba0f9) ISSUES_SRC.issues[row_id#761,component#762] PushedFilters: [IsNotNull(component), EqualTo(component,sync)], ReadSchema: struct<row_id:string,component:string>
