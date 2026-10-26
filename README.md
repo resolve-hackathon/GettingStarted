@@ -5,20 +5,21 @@ Resolution Agent**: investigate a support report across accounts, KB articles,
 releases, and issues; verify the evidence; then post a fix, link an issue, open an
 issue, or escalate. CloudNest is the fictional demo product.
 
-The original `AI_CustomerSupport_Agent.py`, `CodeAI Agent`, and image guide are
-preserved as early references. Use the `resolve/` package for this approach.
+The earlier Slack + Discord prototype and its image guide are kept in `legacy/`
+for reference only; they are not part of the build. Use the `resolve/` package.
 
 ## Run it now
 
-Python 3.11 or newer. No API keys, downloads, or third-party packages are needed
-for the CLI, demo, evaluation, or tests. Run these from this repository's root:
+Python 3.9 or newer (the macOS system `python3` works). No API keys, downloads,
+or third-party packages are needed for the CLI, demo, evaluation, or tests. Run
+these from this repository's root; on Windows, use `py` in place of `python3`:
 
 ```bash
 git clone https://github.com/resolve-hackathon/GettingStarted.git
 cd GettingStarted
-python -m resolve demo --trace
-python -m resolve eval
-python -m unittest discover -s tests -v
+python3 -m resolve demo --trace
+python3 -m resolve eval
+python3 -m unittest discover -s tests -v
 ```
 
 The demo prints four complete JSON task states, one per outcome. Its `events`
@@ -29,10 +30,10 @@ offline baseline and dry-run actions, even when live services are configured.
 Try individual reports:
 
 ```bash
-python -m resolve ask --customer-id c-031 "Desktop sync stopped after the update" --trace
-python -m resolve ask --customer-id c-002 "Why is my export blank?"
-python -m resolve ask --customer-id c-003 "I can reproduce an upload crash after 3.8.2"
-python -m resolve ask --customer-id c-004 "My workspace turns purple at midnight"
+python3 -m resolve ask --customer-id c-031 "Desktop sync stopped after the update" --trace
+python3 -m resolve ask --customer-id c-002 "Why is my export blank?"
+python3 -m resolve ask --customer-id c-003 "I can reproduce an upload crash after 3.8.2"
+python3 -m resolve ask --customer-id c-004 "My workspace turns purple at midnight"
 ```
 
 Expected actions: `link_issue`, `post_fix`, `open_issue`, `escalate`.
@@ -85,11 +86,11 @@ then escalates. Local triage and response templates do not make model calls.
 For Discord, install the optional dependency in a virtual environment:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 # Activate .venv using your shell's activation command.
-python -m pip install -e ".[discord]"
-python -m resolve seed
-python -m resolve bot
+python3 -m pip install -e ".[discord]"
+python3 -m resolve seed
+python3 -m resolve bot
 ```
 
 Set `DISCORD_TOKEN`, `DISCORD_GUILD_ID`, and `DISCORD_SUPPORT_CHANNEL_ID`; enable
@@ -99,7 +100,7 @@ threads. It ignores other channels, bots, webhooks, and DMs. Give it View Channe
 Send Messages, Read Message History, and Send Messages in Threads as needed.
 
 For a demo user, replace that user's synthetic `discord_id` in
-`data/accounts.json` with the test sender's ID and run `python -m resolve seed`.
+`data/accounts.json` with the test sender's ID and run `python3 -m resolve seed`.
 Unmapped users are escalated instead of accessing another account. Dry-run bot
 mode posts clearly marked previews in Discord but performs no GitHub actions or
 human handoff.
@@ -108,7 +109,7 @@ Live mode additionally requires `GITHUB_TOKEN`, `GITHUB_REPOSITORY`,
 `DISCORD_ESCALATION_CHANNEL_ID`, and `RESOLVE_ALLOW_LIVE_ACTIONS=true`:
 
 ```bash
-python -m resolve bot --live
+python3 -m resolve bot --live
 ```
 
 Use a demo repository with Issues enabled, the `component:upload` (and other
@@ -139,7 +140,7 @@ tests/test_acceptance.py  Outcomes, verification, and API failure checks
 docs/INTEGRATIONS.md      Sponsor integration status and remaining work
 ```
 
-`python -m resolve seed` rebuilds `runtime/support.sqlite` after editing source
+`python3 -m resolve seed` rebuilds `runtime/support.sqlite` after editing source
 files. It does not clear the separate live action journal. All paths assume an
 editable checkout; run commands from the repository root. `runtime/` and `.env`
 are ignored by Git.

@@ -4,6 +4,8 @@ The SQLite snapshot is intentionally a FALLBACK, not a Zetaris integration.
 The research contract returns Evidence objects and never executes model SQL.
 """
 
+from __future__ import annotations
+
 import json
 import re
 import sqlite3

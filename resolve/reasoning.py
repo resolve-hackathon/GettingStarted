@@ -1,5 +1,7 @@
 """Offline decisions plus optional Nemotron/OpenAI-compatible JSON inference."""
 
+from __future__ import annotations
+
 import json
 import math
 import os
@@ -189,9 +191,11 @@ class CompatibleReasoner:
             "temperature": 0, "max_tokens": 1800, "stream": False,
         })
         try:
-            content = response["choices"][0]["message"]["content"].strip()
-            content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content)
-            parsed = json.loads(content)
+            content = response["choices"][0]["message"]["content"]
+            # Nemotron reasoning models may prepend <think>...</think> or wrap the
+            # object in prose/fences; decode the first JSON object after that.
+            content = re.sub(r"<think>.*?</think>", "", content, flags=re.S)
+            parsed, _ = json.JSONDecoder().raw_decode(content[content.index("{"):])
             if not isinstance(parsed, dict):
                 raise ValueError("Expected JSON object")
             return parsed

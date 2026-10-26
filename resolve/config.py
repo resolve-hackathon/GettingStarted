@@ -1,5 +1,7 @@
 """Small .env reader, with real environment variables taking precedence."""
 
+from __future__ import annotations
+
 import os
 from pathlib import Path
 

@@ -255,6 +255,21 @@ class AcceptanceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             CompatibleReasoner(api, "test-model").propose(self.known_bug())
 
+    def test_model_reasoning_preamble_is_ignored_but_claims_still_verified(self):
+        expected = RulesReasoner().propose(self.known_bug())
+        content = json.dumps({
+            "action": expected.action.value, "confidence": expected.confidence,
+            "selected_id": expected.selected_id, "supporting_ids": expected.supporting_ids,
+            "claims": [{"evidence_id": c.evidence_id, "field": c.field, "value": c.value}
+                       for c in expected.claims],
+        })
+        api = FakeAPI([{"choices": [{"message": {
+            "content": "<think>GH-182 {matches} the version.</think>\n```json\n" + content + "\n```"}}]}])
+        state = self.known_bug()
+        state.hypothesis = CompatibleReasoner(api, "test-model").propose(state)
+        self.assertEqual(state.hypothesis.action, Action.LINK_ISSUE)
+        self.assertEqual(verify_structure(state), [])
+
     def test_seed_has_fifty_accounts_ten_articles_and_ten_issues(self):
         import sqlite3
         with sqlite3.connect(self.database) as connection:
