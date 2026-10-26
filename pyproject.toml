@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "resolve-hackathon-starter"
+name = "resolve-agent"
 version = "0.1.0"
-description = "Evidence-first customer support agent starter for Resolve"
+description = "Resolve: evidence-first customer support agent"
 requires-python = ">=3.9"
 dependencies = []
 

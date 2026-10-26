@@ -1,12 +1,68 @@
 [
-  {"id":"known-bug","customer_id":"c-031","message":"Desktop sync stopped working after this morning's update","expected_action":"link_issue"},
-  {"id":"known-bug-paraphrase","customer_id":"c-031","message":"My files are stuck in sync after upgrading","expected_action":"link_issue"},
-  {"id":"kb-fix","customer_id":"c-002","message":"Why is my export blank?","expected_action":"post_fix"},
-  {"id":"kb-paraphrase","customer_id":"c-002","message":"The exported CSV is empty","expected_action":"post_fix"},
-  {"id":"new-bug","customer_id":"c-003","message":"I can reproduce an upload crash after the 3.8.2 update","expected_action":"open_issue"},
-  {"id":"purple-at-midnight","customer_id":"c-004","message":"My workspace turns purple at midnight","expected_action":"post_fix"},
-  {"id":"missing-account","customer_id":"c-missing","message":"The export is blank","expected_action":"escalate"},
-  {"id":"wrong-kb-version","customer_id":"c-003","message":"My export is blank on this version","expected_action":"escalate"},
-  {"id":"password-fix","customer_id":"c-002","message":"I forgot my login password and need a reset","expected_action":"post_fix"},
-  {"id":"human-request","customer_id":"c-031","message":"Please get a human to help with sync","expected_action":"escalate"}
+  {
+    "id": "known-bug",
+    "customer_id": "c-031",
+    "message": "Desktop sync stopped working after this morning's update",
+    "expected_action": "link_issue"
+  },
+  {
+    "id": "known-bug-paraphrase",
+    "customer_id": "c-031",
+    "message": "My files are stuck in sync after upgrading",
+    "expected_action": "link_issue"
+  },
+  {
+    "id": "kb-fix",
+    "customer_id": "c-002",
+    "message": "Why is my export blank?",
+    "expected_action": "post_fix"
+  },
+  {
+    "id": "kb-paraphrase",
+    "customer_id": "c-002",
+    "message": "The exported CSV is empty",
+    "expected_action": "post_fix"
+  },
+  {
+    "id": "new-bug",
+    "customer_id": "c-003",
+    "message": "I can reproduce an upload crash after the 3.8.2 update",
+    "expected_action": "open_issue"
+  },
+  {
+    "id": "purple-at-midnight",
+    "customer_id": "c-004",
+    "message": "My workspace turns purple at midnight",
+    "expected_action": "post_fix"
+  },
+  {
+    "id": "missing-account",
+    "customer_id": "c-missing",
+    "message": "The export is blank",
+    "expected_action": "escalate"
+  },
+  {
+    "id": "wrong-kb-version",
+    "customer_id": "c-003",
+    "message": "My export is blank on this version",
+    "expected_action": "escalate"
+  },
+  {
+    "id": "password-fix",
+    "customer_id": "c-002",
+    "message": "I forgot my login password and need a reset",
+    "expected_action": "post_fix"
+  },
+  {
+    "id": "human-request",
+    "customer_id": "c-031",
+    "message": "Please get a human to help with sync",
+    "expected_action": "escalate"
+  },
+  {
+    "id": "known-bug-plain",
+    "customer_id": "c-031",
+    "message": "my desktop app quit syncing since yesterday's upgrade",
+    "expected_action": "link_issue"
+  }
 ]

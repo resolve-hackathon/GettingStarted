@@ -1,33 +1,118 @@
-# Resolve: evidence-first support agent starter
+# Resolve
 
-A runnable starting point for the approach in **Resolve: Customer Support
-Resolution Agent**: investigate a support report across accounts, KB articles,
-releases, and issues; verify the evidence; then post a fix, link an issue, open an
-issue, or escalate. CloudNest is the fictional demo product.
+**A support agent that investigates, decides, acts, and knows when to stop.**
 
-The earlier Slack + Discord prototype and its image guide are kept in `legacy/`
-for reference only; they are not part of the build. Use the `resolve/` package.
+Resolve lives in a Discord support channel. When a customer reports a problem, it
+investigates across four separate systems (the account record, the support knowledge
+base, the release history, and the GitHub issue tracker), decides what is wrong,
+checks every claim against a source row, and then does what a support engineer would
+do: posts the verified fix, links the customer's report to the matching GitHub issue,
+opens a new bug report, or hands off to a human with an evidence packet.
 
-## Run it now
+Open Agent Hackathon 2026 · Track 1: **Solving Fragmented Intelligence**
 
-Python 3.9 or newer (the macOS system `python3` works). No API keys, downloads,
-or third-party packages are needed for the CLI, demo, evaluation, or tests. Run
-these from this repository's root; on Windows, use `py` in place of `python3`:
+> **CloudNest** is a fictional file-sync product we created for the demo. All accounts,
+> KB articles, releases and issues are synthetic; no real customer data is used.
+> Issue #1 lives in a real public repository,
+> [resolve-hackathon/cloudnest](https://github.com/resolve-hackathon/cloudnest).
+
+---
+
+## The problem
+
+Answering one support question usually means opening three or four systems: who is
+this customer and what version are they on, what changed in that version, is there a
+known bug, is there a documented fix. Most support bots only search the docs and
+guess, so they fail on exactly the questions that matter: the ones caused by a recent
+release or a known bug. And when they are wrong, they are confidently wrong.
+
+## What Resolve does
+
+| Customer says | Resolve finds | Resolve does |
+| --- | --- | --- |
+| "Desktop sync stopped after the update" | Account on 3.8.1, the 3.8.1 sync rewrite, open issue #1 | Posts the workaround and **comments on GitHub issue #1** with the report |
+| "Sync is still stuck" (same customer, later) | Its own memory of the first report | Answers, **without commenting on the issue twice** |
+| "Why is my export blank?" | Account on 3.7.4, KB article for 3.7.x | Posts the three fix steps with a link to the article |
+| "Uploads crash since 3.8.2" | A documented 3.8.2 upload regression, no open issue | **Opens a new GitHub issue** with the evidence |
+| "My workspace turns purple at midnight" | Nothing that supports an answer | Retries once, then **escalates** with an evidence packet |
+| Anything, from an unlinked Discord user | No account | Escalates; never trusts an account ID typed in chat |
+
+Every reply cites its source. Every decision is logged with the rows that support it.
+
+## How it works
+
+```mermaid
+flowchart LR
+    D[Discord message] --> T[Triage<br/>Nemotron]
+    subgraph Z[Zetaris: one federated query]
+        A[(Accounts)]
+        K[(Knowledge base)]
+        R[(Releases)]
+        I[(GitHub issues)]
+    end
+    T --> RS[Researcher]
+    A & K & R & I --> RS
+    RS --> H[Hypothesis<br/>Nemotron]
+    H --> V{Verifier<br/>hard checks + Nemotron audit}
+    V -- gap: retry once --> RS
+    V -- verified --> RV[Resolver]
+    V -- still unsupported --> E[Escalate]
+    RV --> P[Post fix]
+    RV --> L[Link issue + comment]
+    RV --> O[Open issue]
+    WM[(Meterless World Model)] -.-> H & V
+    M[(Meterless H-MEM)] -.-> H & RV
+```
+
+1. **Triage** (Nemotron) reads the message in plain language and picks the product
+   area from a fixed list. Refund and "talk to a human" requests go straight to a
+   person. If the model is unavailable, a keyword fallback takes over.
+2. **Researcher** sends one SQL statement through **Zetaris** that joins the four
+   sources in place, scoped to this customer's account, product area, and version.
+3. **Hypothesis** (Nemotron) chooses one of four allowlisted actions. Its claims
+   *point at* source fields rather than retyping them, so it cannot misquote a fix.
+4. **Verifier** runs hard checks (every claim maps to a real row and field, the fix
+   applies to this client version, the issue is open and affects this version, a new
+   bug needs a documented regression) and then an independent Nemotron audit. A gap
+   sends the researcher back once; a second failure escalates.
+5. **Resolver** executes the action through fixed handlers. The model never writes an
+   API call. Live writes are re-read to confirm they happened, and a journal keyed by
+   question ID prevents duplicate issues after a timeout.
+
+## Sponsor technology
+
+| Sponsor | What we built with it | Where |
+| --- | --- | --- |
+| **Zetaris** | The four sources are four separate databases, registered as four Zetaris datasources. The researcher sends one federated statement over the Zetaris REST API. The query plan shows four independent scans with filters **pushed down to each source**: nothing is copied. | `resolve/zetaris.py`, `sql/research_zetaris.sql`, `zetaris/`, [query plan](docs/evidence/zetaris_query_plan.txt) |
+| **Meterless: World Model** | `WorldStoreService`, `IngestPipelineService`, `ContextBuilderService`. Every Zetaris row becomes an entity with provenance (source, row, via) and agent attribution (role, run, attempt), with typed relationships. The context builder's payload is what Nemotron reasons over. | `resolve/world_model.py`, `logs/world.jsonl`, `logs/run_manifest.jsonl` |
+| **Meterless: H-MEM** | `MemoryStoreService`, `MemoryRetrievalService`. Tiered memory with warm start and hybrid retrieval. Prior resolutions are injected into the model context, and a confirmed earlier report stops Resolve from commenting on the same issue twice. | `resolve/memory.py`, `logs/memory_audit.jsonl` |
+| **NVIDIA Nemotron** | `nvidia/nemotron-3-super-120b-a12b` on build.nvidia.com does triage, the hypothesis, and the independent verifier audit. | `resolve/reasoning.py` |
+| **Cursor** | _Fill in before submitting: how Cursor was used, with screenshots in `docs/evidence/`._ | `docs/evidence/` |
+
+Details for each integration, including what is not implemented:
+[docs/INTEGRATIONS.md](docs/INTEGRATIONS.md). Machine-readable summary: [metadata.json](metadata.json).
+
+---
+
+## Run it in two minutes (no keys)
+
+Python 3.9 or newer. No API keys, Docker, or packages are needed for the offline
+demo, evaluation, and tests. On Windows, use `py` instead of `python3`.
 
 ```bash
 git clone https://github.com/resolve-hackathon/GettingStarted.git
 cd GettingStarted
 python3 -m resolve demo --trace
 python3 -m resolve eval
-python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tests
 ```
 
-The demo prints four complete JSON task states, one per outcome. Its `events`
-show role decisions, source row IDs, verification gaps, and action status. It does
-not print hidden model reasoning. `demo` and `eval` always use the deterministic
-offline baseline and dry-run actions, even when live services are configured.
+`demo` runs four scenarios end to end and prints each full task state, including the
+`events` trail and the World Model context. `eval` runs 11 labelled questions. Both use
+the deterministic offline baseline and dry-run actions, so they never contact any
+service, even if you have configured one.
 
-Try individual reports:
+Try single questions:
 
 ```bash
 python3 -m resolve ask --customer-id c-031 "Desktop sync stopped after the update" --trace
@@ -36,130 +121,163 @@ python3 -m resolve ask --customer-id c-003 "I can reproduce an upload crash afte
 python3 -m resolve ask --customer-id c-004 "My workspace turns purple at midnight"
 ```
 
-Expected actions: `link_issue`, `post_fix`, `open_issue`, `escalate`.
-Dry-run results have `status: dry_run`, contain the intended payload, and return
-no invented remote message IDs or issue numbers. They do not contact Discord or
-GitHub. GH-1 is a real open issue in the demo product repository,
-[resolve-hackathon/cloudnest#1](https://github.com/resolve-hackathon/cloudnest/issues/1);
-the other issue fixtures use non-working `example.invalid` URLs, which live mode
-refuses to comment on.
+Expected: `link_issue`, `post_fix`, `open_issue`, `escalate`.
 
-## What is implemented
+## Full setup
 
-| Piece | Starter behavior |
-| --- | --- |
-| Triage | Deterministic customer/component routing; Discord identity comes from the sender mapping, never message text |
-| Researcher | Parameterized SQL over a local fallback snapshot of four logical sources |
-| Hypothesis | Offline rule baseline or optional Nemotron/OpenAI-compatible JSON call |
-| Verifier | Checks exact claim values, source IDs, account version, remedy applicability, and action eligibility; compatible mode also runs an independent model audit |
-| Resolver | Four fixed action handlers, dry run by default; live Discord/GitHub implementations verify returned receipts |
-| Retry | At most one additional research pass using verification gaps and symptom text |
-| State/log | One inspectable JSON object per question; Discord runs append JSONL locally |
-| Duplicate protection | Live actions are journaled by question ID; uncertain/failed POSTs are not automatically replayed |
-| Seed data | 50 synthetic accounts, 10 authored KB articles, 6 releases, 10 issue fixtures |
-| Checks | Four end-to-end outcome tests, ten offline evaluation cases, and failure/verification tests |
+Copy the config and edit it: `cp .env.example .env`. Never commit `.env`.
 
-All non-escalation actions must pass the verifier with confidence at least 0.6.
-Replies use exact remedies from source rows. A new bug requires an explicit
-regression record with matching symptom signals; a recent release alone is not
-enough. Unknown customers and unsupported/version-mismatched questions escalate.
-Offline confidence scores are illustrative, not measured probabilities.
+### 1. Nemotron
 
-## Configure optional services
-
-Copy `.env.example` to `.env` (`cp .env.example .env` on macOS/Linux, or
-`Copy-Item .env.example .env` in PowerShell). Environment variables override the
-file. Do not commit credentials.
-
-For model inference, set:
+Create a key at [build.nvidia.com](https://build.nvidia.com/settings/api-keys), then:
 
 ```dotenv
 RESOLVE_MODEL_MODE=compatible
 MODEL_BASE_URL=https://integrate.api.nvidia.com/v1
-MODEL_API_KEY=your_key
-MODEL_NAME=the_model_identifier_from_your_provider
+MODEL_API_KEY=nvapi-...
+MODEL_NAME=nvidia/nemotron-3-super-120b-a12b
+MODEL_TIMEOUT_SECONDS=60
 ```
 
-Then run an `ask` command. It still uses dry-run actions. To use a different
-OpenAI-compatible endpoint, change the base URL, key, and model together. There is
-no silent provider switch: unavailable or malformed inference retries once and
-then escalates. Local triage and response templates do not make model calls.
+Any OpenAI-compatible endpoint works the same way. Model calls retry once after a
+pause; a malformed or unavailable answer escalates rather than guessing.
 
-For Discord, install the optional dependency in a virtual environment:
+### 2. Zetaris
 
-```bash
-python3 -m venv .venv
-# Activate .venv using your shell's activation command.
-python3 -m pip install -e ".[discord]"
-python3 -m resolve seed
-python3 -m resolve bot
+Requires Docker with 8 GB of memory. On Apple Silicon, enable Rosetta in Docker Desktop.
+
+1. From Zetaris Cloud Gateway, choose **Run locally**, download the bundle, and run its
+   `docker login` command. In the bundle folder: `./preflight.sh`,
+   `docker compose pull`, `docker compose up -d`, `./verify.sh`.
+2. Load the four sources into four separate databases:
+   ```bash
+   python3 zetaris/export_csv.py
+   ZETARIS_BUNDLE=/path/to/zetaris-platform ./zetaris/load_postgres.sh
+   ```
+3. In the Zetaris SQL editor (http://localhost:3000), run `zetaris/register.sql` one
+   statement at a time, with the bundle's `POSTGRES_PASSWORD` filled in. The last
+   statement is a smoke test across all four sources.
+4. Create an API token (Management, then API Tokens) and set:
+   ```dotenv
+   RESOLVE_RESEARCH=zetaris
+   ZETARIS_REST_URL=http://localhost:8888/api/v1.0
+   ZETARIS_ORG_ID=1
+   ZETARIS_API_KEY=...
+   ```
+
+Rerun step 2 after editing anything in `data/`. Without Zetaris, `RESOLVE_RESEARCH=local`
+runs the same SQL against a local SQLite snapshot: that is the fallback, not federation.
+
+### 3. Discord bot
+
+1. Create an application at the Discord developer portal, add a bot, and enable the
+   **Message Content** intent. Invite it with View Channels, Send Messages, Send
+   Messages in Threads, and Read Message History.
+2. Make a `#support` channel and a private `#support-escalations` channel that the bot
+   can write to.
+3. Link a test user to a customer: put their Discord user ID in that account's
+   `discord_id` in `data/accounts.json`, then `python3 -m resolve seed` and reload
+   Zetaris (step 2 above). Unlinked users are always escalated.
+4. Configure and run:
+   ```dotenv
+   DISCORD_TOKEN=...
+   DISCORD_GUILD_ID=...
+   DISCORD_SUPPORT_CHANNEL_ID=...
+   DISCORD_ESCALATION_CHANNEL_ID=...
+   ```
+   ```bash
+   python3 -m venv .venv && source .venv/bin/activate
+   python3 -m pip install --upgrade pip && pip install -e ".[discord]"
+   python3 -m resolve bot
+   ```
+   In `#support`, type `!resolve your question` or mention the bot. Without `--live`,
+   replies are marked `[DRY RUN]` and nothing is written to GitHub.
+
+### 4. Live actions
+
+Live mode needs **both** the flag and the setting, so it cannot be switched on by accident:
+
+```dotenv
+RESOLVE_ALLOW_LIVE_ACTIONS=true
+GITHUB_TOKEN=github_pat_...      # fine-grained, Issues: read and write, demo repo only
+GITHUB_REPOSITORY=resolve-hackathon/cloudnest
 ```
-
-Set `DISCORD_TOKEN`, `DISCORD_GUILD_ID`, and `DISCORD_SUPPORT_CHANNEL_ID`; enable
-the Message Content intent in the Discord developer portal. The bot handles
-`!resolve your question` or an @mention in that one support channel and its
-threads. It ignores other channels, bots, webhooks, and DMs. Give it View Channel,
-Send Messages, Read Message History, and Send Messages in Threads as needed.
-
-For a demo user, replace that user's synthetic `discord_id` in
-`data/accounts.json` with the test sender's ID and run `python3 -m resolve seed`.
-Unmapped users are escalated instead of accessing another account. Dry-run bot
-mode posts clearly marked previews in Discord but performs no GitHub actions or
-human handoff.
-
-Live mode additionally requires `GITHUB_TOKEN`, `GITHUB_REPOSITORY`,
-`DISCORD_ESCALATION_CHANNEL_ID`, and `RESOLVE_ALLOW_LIVE_ACTIONS=true`:
 
 ```bash
 python3 -m resolve bot --live
+# or one question from the CLI:
+python3 -m resolve ask --live --question-id demo-1 --customer-id c-003 "Uploads crash since 3.8.2"
 ```
 
-Use a demo repository with Issues enabled, the `component:upload` (and other
-needed component) labels, and a token with repository Issues write access.
-Replace issue fixtures with actual issue numbers, URLs, affected versions, and
-workarounds before demonstrating `link_issue` live, then reseed. Fixture URLs are
-blocked from live commenting. The handler re-reads the live issue before
-commenting. New issues are re-read after creation. Failed or partial actions
-report `failed` with the receipts obtained so far; they never claim a confirmed
-handoff or fix delivery. The private escalation channel must be writable.
+Reusing a question ID never repeats a write. After a timeout, check GitHub before
+retrying with a new ID.
 
-For CLI live actions use `ask --live --question-id a-stable-report-id ...`.
-Use the same ID for the same report to avoid duplicate remote actions. After a
-timeout, inspect both the action journal and remote service before retrying.
+## Safety and honesty by design
 
-## Files to work on next
+- **Identity comes from the sender, never the message.** A customer ID typed in chat
+  is ignored; unknown senders escalate. Nobody can ask about someone else's account.
+- **The model cannot act directly.** It picks one of four actions; fixed handlers
+  perform them in one configured repository. Customer text is marked untrusted in
+  every prompt and every issue body.
+- **No answer without a source.** Replies use the exact remedy text from the source
+  row. Unsupported claims fail verification.
+- **Writes are confirmed.** Comments and issues are re-read after creation. Failed or
+  partial actions are reported as failed, never as done.
+- **Knowing when not to act** is a feature: ambiguous, unsupported, billing, and
+  unknown-sender cases escalate with everything a human needs.
+
+## Evidence for judges
+
+| File | Shows |
+| --- | --- |
+| [docs/evidence/zetaris_query_plan.txt](docs/evidence/zetaris_query_plan.txt) | Zetaris physical plan: four datasource scans, pushed-down filters |
+| [docs/evidence/live_run_zetaris_nemotron.txt](docs/evidence/live_run_zetaris_nemotron.txt) | Four scenarios run through live Zetaris and Nemotron, with full event trails |
+| `logs/world.jsonl`, `logs/run_manifest.jsonl` | World Model entities, relationships, decisions, and wired services (written at run time) |
+| `logs/memory_audit.jsonl` | H-MEM writes per run (written at run time) |
+| `tests/` | 36 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
+
+## Project layout
 
 ```text
-resolve/state.py          Shared task state and action allowlist
-resolve/agent.py          Five-role sequence and bounded retry
-resolve/research.py       Seed importer, SQL fallback, federated connection seam
-resolve/reasoning.py      Offline baseline, prompts, hard verifier, model adapter
-resolve/actions.py        Four actions, receipts, persistent action journal
-resolve/discord_bot.py    One-server Discord entry point
-sql/research.sql          Parameterized four-source research query
-data/                    Editable synthetic source material and evaluation cases
-tests/test_acceptance.py  Outcomes, verification, and API failure checks
-docs/INTEGRATIONS.md      Sponsor integration status and remaining work
+resolve/
+  agent.py          Five roles, one bounded retry, engine wiring
+  reasoning.py      Triage, Nemotron adapter, prompts, hard verifier
+  research.py       Research contract, version logic, local fallback
+  zetaris.py        Zetaris REST researcher
+  world_model.py    Meterless World Model engine
+  memory.py         Meterless H-MEM engine
+  actions.py        Four action handlers, receipts, action journal
+  discord_bot.py    One-server Discord entry point
+sql/                Research and identity queries (local and Zetaris)
+zetaris/            Export, load, and datasource registration
+data/               Synthetic CloudNest accounts, KB, releases, issues, eval cases
+tests/              Unit and acceptance tests
+docs/               Integration notes and evidence
 ```
 
-`python3 -m resolve seed` rebuilds `runtime/support.sqlite` after editing source
-files. It does not clear the separate live action journal. All paths assume an
-editable checkout; run commands from the repository root. `runtime/` and `.env`
-are ignored by Git.
+## Limitations
 
-## Boundaries and remaining work
+- Product-area scoping and version ranges are exact; version tags must be
+  `major.minor.patch`.
+- GitHub issues are read from a snapshot loaded into Zetaris, not synced continuously.
+  Live writes always re-read the real issue first.
+- Questions that match two articles equally (for example "I can't log in") escalate
+  rather than guess.
+- Not implemented: World Model enrichment and control plane; H-MEM dreaming, sleep and
+  conflict resolution; the Meterless Markovian engine.
 
-This is a working starter, not a complete hackathon submission. Live sponsor
-services were not exercised. Zetaris federation and Meterless SDK/service calls
-still need your tenant details and the event's confirmed requirements. The
-current explicit shared-state design is inspired by the plan's World Model
-pattern; it does not claim to call Meterless. See
-[integration notes](docs/INTEGRATIONS.md) for the exact handoff points.
+## What's next
 
-The offline retriever uses simple keyword matching and stable three-part version
-ranges. It does not prove semantic correctness for arbitrary real questions.
-GitHub research currently uses an authored snapshot, not a continuous API sync;
-live action handlers are separate from the research source. Source revalidation,
-rate-limit handling, real identity provisioning, operational monitoring, and
-live-model evaluation are next steps. Keep all demo data synthetic and avoid
-using this starter for account changes, refunds, or destructive actions.
+- `!link` command so customers verify their own account with a one-time code
+- Clarifying questions for ambiguous reports instead of escalating
+- Live GitHub issue sync into Zetaris, and Slack as a second channel
+- Duplicate-issue detection across customers
+
+## Pre-existing components
+
+None. All code and data in this repository were written during the build window
+(from 22 October 2026). Open-source dependency: `discord.py` (optional, for the bot).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
