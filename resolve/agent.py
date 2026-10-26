@@ -32,7 +32,7 @@ class Agent:
                     gaps = self.reasoner.verify(state)
                 state.gaps, state.verified = gaps, not gaps
             except (ServiceError, ValueError, OSError) as error:
-                state.gaps = [f"Investigation unavailable ({type(error).__name__})"]
+                state.gaps = [f"Investigation unavailable ({type(error).__name__}: {str(error)[:160]})"]
             state.record_event("verifier", verified=state.verified, gaps=list(state.gaps))
             if state.verified:
                 break
