@@ -7,3 +7,4 @@ __pycache__/
 runtime/
 .DS_Store
 logs/
+data/discord_links.local.json

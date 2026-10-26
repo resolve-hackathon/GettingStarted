@@ -91,9 +91,17 @@ def seed_snapshot(data: Path, database: Path) -> None:
         """)
         for table in ("accounts", "kb", "releases", "issues"):
             connection.execute(f"DELETE FROM {table}")  # constant allowlist above
+        # Real Discord user IDs for demo testers live in an ignored local file, so the
+        # committed data keeps placeholders: {"c-031": "<discord user id>", ...}
+        links_path = data / "discord_links.local.json"
+        links = json.loads(links_path.read_text()) if links_path.exists() else {}
+        if not all(isinstance(v, str) and v.isdigit() for v in links.values()):
+            raise ValueError("discord_links.local.json values must be numeric Discord user IDs")
         for row in json.loads((data / "accounts.json").read_text()):
             version(row["client_version"])
             version(row["last_working_version"])
+            if row["id"] in links:
+                row = {**row, "discord_id": links[row["id"]]}
             connection.execute("INSERT INTO accounts VALUES (?, ?, ?, ?, ?)", (
                 row["id"], row["discord_id"], row["client_version"],
                 row["last_working_version"], json.dumps(row)))
@@ -108,7 +116,7 @@ def seed_snapshot(data: Path, database: Path) -> None:
             row["body"] = body.strip()
             row["steps"] = re.findall(r"^\d+\. (.+)$", body, re.MULTILINE)
             row["url"] = (
-                "https://github.com/resolve-hackathon/GettingStarted/blob/main/"
+                "https://github.com/resolve-hackathon/resolve-agent/blob/main/"
                 f"data/kb/{path.name}"
             )
             connection.execute("INSERT INTO kb VALUES (?, ?, ?)", (
@@ -124,7 +132,7 @@ def seed_snapshot(data: Path, database: Path) -> None:
             version(row["version"])
             row["body"] = re.sub(r"<!--.*?-->", "", body).strip()
             row["url"] = (
-                "https://github.com/resolve-hackathon/GettingStarted/blob/main/"
+                "https://github.com/resolve-hackathon/resolve-agent/blob/main/"
                 "data/CHANGELOG.md"
             )
             connection.execute("INSERT INTO releases VALUES (?, ?, ?)", (

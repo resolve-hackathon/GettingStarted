@@ -90,7 +90,7 @@ class LiveActions:
         return cls(JSONClient("https://api.github.com", "Bearer " + os.environ["GITHUB_TOKEN"]),
                    # Discord rejects REST clients without a DiscordBot (url, version) agent.
                    JSONClient("https://discord.com/api/v10", "Bot " + os.environ["DISCORD_TOKEN"],
-                              user_agent="DiscordBot (https://github.com/resolve-hackathon/GettingStarted, 0.1)"),
+                              user_agent="DiscordBot (https://github.com/resolve-hackathon/resolve-agent, 0.1)"),
                    os.environ["GITHUB_REPOSITORY"], channel_id,
                    os.environ["DISCORD_ESCALATION_CHANNEL_ID"], message_id)
 

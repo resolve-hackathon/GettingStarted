@@ -100,8 +100,8 @@ Python 3.9 or newer. No API keys, Docker, or packages are needed for the offline
 demo, evaluation, and tests. On Windows, use `py` instead of `python3`.
 
 ```bash
-git clone https://github.com/resolve-hackathon/GettingStarted.git
-cd GettingStarted
+git clone https://github.com/resolve-hackathon/resolve-agent.git
+cd resolve-agent
 python3 -m resolve demo --trace
 python3 -m resolve eval
 python3 -m unittest discover -s tests
@@ -175,9 +175,10 @@ runs the same SQL against a local SQLite snapshot: that is the fallback, not fed
    Messages in Threads, and Read Message History.
 2. Make a `#support` channel and a private `#support-escalations` channel that the bot
    can write to.
-3. Link a test user to a customer: put their Discord user ID in that account's
-   `discord_id` in `data/accounts.json`, then `python3 -m resolve seed` and reload
-   Zetaris (step 2 above). Unlinked users are always escalated.
+3. Link a test user to a customer in `data/discord_links.local.json` (ignored by
+   Git), for example `{"c-031": "<their Discord user ID>"}`, then run
+   `python3 -m resolve seed` and reload Zetaris (step 2 above). Unlinked users are
+   always escalated.
 4. Configure and run:
    ```dotenv
    DISCORD_TOKEN=...
@@ -234,7 +235,7 @@ retrying with a new ID.
 | [docs/evidence/live_run_zetaris_nemotron.txt](docs/evidence/live_run_zetaris_nemotron.txt) | Four scenarios run through live Zetaris and Nemotron, with full event trails |
 | `logs/world.jsonl`, `logs/run_manifest.jsonl` | World Model entities, relationships, decisions, and wired services (written at run time) |
 | `logs/memory_audit.jsonl` | H-MEM writes per run (written at run time) |
-| `tests/` | 36 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
+| `tests/` | 38 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
 
 ## Project layout
 
