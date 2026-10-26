@@ -43,6 +43,27 @@ Start with Zetaris's official [connection overview](https://kbase.zetaris.com/kn
 and [API access guide](https://kbase.zetaris.com/knowledge/accessing-zetaris-using-api)
 to obtain the correct tenant connection and authentication details.
 
+## Refreshing the KB source
+
+The purple-at-midnight fix is `KB-011`, an authored fictional CloudNest scenario.
+The existing sources must be refreshed after pulling new KB files:
+
+- For `RESOLVE_RESEARCH=local`, run `python3 -m resolve seed`, then restart the bot.
+- For `RESOLVE_RESEARCH=zetaris` with the demo PostgreSQL sources created by
+  `zetaris/load_postgres.sh`, run this from the repository root, then restart the bot:
+
+```bash
+python3 zetaris/refresh_kb.py --bundle /path/to/zetaris-platform --article-id KB-011
+```
+
+Use your existing Zetaris platform directory for `--bundle`. The helper refreshes
+only the requested article IDs in `resolve_kb.kb` in one transaction. It preserves
+other KB rows and the separate account, release, and issue databases. It does not
+re-register datasources. For a different source setup, import the new article
+into the KB source registered in your tenant instead. Running SQLite's seed
+command alone does not refresh a federated source. This repository change does
+not automatically reload an already running Discord bot or an external database.
+
 ## NVIDIA Nemotron: optional compatible transport implemented
 
 The adapter calls `/chat/completions` at the configured base URL with bearer
@@ -120,5 +141,5 @@ and capture a working query and component while building. This starter cannot
 retroactively claim it was authored in Cursor or that its MCP connection exists.
 After tenant integration, rerun the four acceptance scenarios against the real
 services, including visible receipts and the escalation channel, before recording.
-The ten offline cases measure deterministic fixture behavior, not live Nemotron
+The twelve offline cases measure deterministic fixture behavior, not live Nemotron
 accuracy, sponsor compliance, or production readiness.

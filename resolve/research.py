@@ -47,6 +47,7 @@ def matches(record: dict, message: str, *, expanded: bool = False) -> bool:
         "after", "before", "version", "client", "update", "issue", "problem", "an",
         "sync", "export", "exports", "csv", "pdf", "upload", "uploads", "login",
         "password", "notifications", "search", "sharing", "workspace", "cloudnest",
+        "appearance", "theme", "themes", "color", "colour",
     }
     return bool((words - generic) & tokens(record.get("body", "")))
 
@@ -90,7 +91,7 @@ def seed_snapshot(data: Path, database: Path) -> None:
             row["body"] = body.strip()
             row["steps"] = re.findall(r"^\d+\. (.+)$", body, re.MULTILINE)
             row["url"] = (
-                "https://github.com/resolve-hackathon/GettingStarted/blob/main/"
+                "https://github.com/resolve-hackathon/resolve-agent/blob/main/"
                 f"data/kb/{path.name}"
             )
             connection.execute("INSERT INTO kb VALUES (?, ?, ?)", (
@@ -106,7 +107,7 @@ def seed_snapshot(data: Path, database: Path) -> None:
             version(row["version"])
             row["body"] = re.sub(r"<!--.*?-->", "", body).strip()
             row["url"] = (
-                "https://github.com/resolve-hackathon/GettingStarted/blob/main/"
+                "https://github.com/resolve-hackathon/resolve-agent/blob/main/"
                 "data/CHANGELOG.md"
             )
             connection.execute("INSERT INTO releases VALUES (?, ?, ?)", (
