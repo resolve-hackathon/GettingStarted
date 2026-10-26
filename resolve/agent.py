@@ -14,8 +14,16 @@ class Agent:
         if not message.strip() or len(message) > 4000:
             raise ValueError("Message must contain 1 to 4000 characters")
         state = TaskState(question_id, message, customer_id)
-        triage(state)
-        state.record_event("triage", customer_id=customer_id, component=state.component)
+        triage(state)  # keyword baseline, also the fallback
+        method = "keywords"
+        if hasattr(self.reasoner, "triage") and state.issue_type != "human_required":
+            try:
+                self.reasoner.triage(state)
+                method = "model"
+            except (ServiceError, ValueError, OSError):
+                triage(state)  # model unavailable: keep the keyword result
+                method = "keywords (model unavailable)"
+        state.record_event("triage", customer_id=customer_id, component=state.component, method=method)
         if self.memory:
             state.memories = self.memory.retrieval.retrieve(state)
             state.record_event("memory", engine="meterless/h-mem",

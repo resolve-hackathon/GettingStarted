@@ -28,8 +28,23 @@ def applies(record: dict, client_version: str) -> bool:
     return version(record["min_version"]) <= current <= version(record["max_version"])
 
 
+JOINED = {("log", "in"): "login", ("sign", "in"): "signin", ("set", "up"): "setup"}
+
+
+def stem(word: str) -> str:
+    """Tiny suffix stripper so "syncing", "uploads", "crashes" match "sync", "upload", "crash"."""
+    for suffix in ("ing", "ed", "es", "s"):
+        if word.endswith(suffix) and len(word) - len(suffix) >= 3:
+            word = word[: -len(suffix)]
+            break
+    return word
+
+
 def tokens(text: str) -> set[str]:
-    return set(re.findall(r"[a-z0-9]+", text.lower()))
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    result = set(words) | {stem(w) for w in words}
+    result |= {JOINED[pair] for pair in zip(words, words[1:]) if pair in JOINED}
+    return result
 
 
 def matches(record: dict, message: str, *, expanded: bool = False) -> bool:
@@ -48,7 +63,10 @@ def matches(record: dict, message: str, *, expanded: bool = False) -> bool:
         "sync", "export", "exports", "csv", "pdf", "upload", "uploads", "login",
         "password", "notifications", "search", "sharing", "workspace", "cloudnest",
     }
-    return bool((words - generic) & tokens(record.get("body", "")))
+    # Exact words only here: stems would let "crashing" match an article that says
+    # it does NOT cover crashes. Stems are for the curated terms above.
+    raw = set(re.findall(r"[a-z0-9]+", message.lower()))
+    return bool((raw - generic) & set(re.findall(r"[a-z0-9]+", record.get("body", "").lower())))
 
 
 class Researcher(Protocol):
@@ -125,14 +143,18 @@ class SQLResearcher:
     """
 
     def __init__(self, connect: Callable, query: str | None = None,
-                 identity_query: str = "SELECT row_id FROM accounts WHERE discord_id = ?"):
+                 identity_query: str = "SELECT row_id FROM accounts WHERE discord_id = ?",
+                 symptom_filter: bool = True):
         self.connect = connect
+        # True: keep only rows whose keywords match the report (deterministic baseline).
+        # False: keep every component- and version-scoped row; the model judges relevance.
+        self.symptom_filter = symptom_filter
         self.query = query or (ROOT / "sql/research.sql").read_text()
         self.identity_query = identity_query
 
     @classmethod
-    def local(cls, database: Path) -> "SQLResearcher":
-        return cls(lambda: sqlite3.connect(database))
+    def local(cls, database: Path, symptom_filter: bool = True) -> "SQLResearcher":
+        return cls(lambda: sqlite3.connect(database), symptom_filter=symptom_filter)
 
     def customer_for_discord(self, discord_id: str) -> str | None:
         connection = self.connect()
@@ -166,7 +188,7 @@ class SQLResearcher:
                 <= version(account["client_version"])
             ):
                 continue
-            if row.source != "accounts" and not matches(
+            if self.symptom_filter and row.source != "accounts" and not matches(
                 record, state.message, expanded=bool(state.gaps)
             ):
                 continue

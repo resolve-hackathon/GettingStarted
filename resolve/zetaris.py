@@ -126,22 +126,22 @@ class _Connection:
         pass
 
 
-def zetaris_researcher():
+def zetaris_researcher(symptom_filter: bool = True):
     from .research import SQLResearcher
 
     client = ZetarisClient.from_env()
     query = (ROOT / "sql/research_zetaris.sql").read_text()
     identity = (ROOT / "sql/identity_zetaris.sql").read_text()
-    return SQLResearcher(lambda: _Connection(client), query, identity)
+    return SQLResearcher(lambda: _Connection(client), query, identity, symptom_filter)
 
 
-def make_researcher(database: Path):
+def make_researcher(database: Path, symptom_filter: bool = True):
     """RESOLVE_RESEARCH=zetaris uses the federated query; anything else, the local fallback."""
     from .research import SQLResearcher
 
     mode = os.getenv("RESOLVE_RESEARCH", "local")
     if mode == "zetaris":
-        return zetaris_researcher()
+        return zetaris_researcher(symptom_filter)
     if mode != "local":
         raise ValueError("RESOLVE_RESEARCH must be local or zetaris")
-    return SQLResearcher.local(database)
+    return SQLResearcher.local(database, symptom_filter)

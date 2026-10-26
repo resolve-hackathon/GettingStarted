@@ -20,7 +20,10 @@ def build_agent(database: Path, actions) -> Agent:
     if mode not in {"rules", "compatible"}:
         raise ValueError("RESOLVE_MODEL_MODE must be rules or compatible")
     reasoner = RulesReasoner() if mode == "rules" else CompatibleReasoner.from_env()
-    return Agent(make_researcher(database), reasoner, actions, *meterless_engines())
+    # With a model, research returns every component/version-scoped row and Nemotron
+    # judges relevance; the rules baseline keeps keyword filtering.
+    return Agent(make_researcher(database, symptom_filter=mode == "rules"), reasoner, actions,
+                 *meterless_engines())
 
 
 def meterless_engines(log_dir=None, memory_dir=None):
