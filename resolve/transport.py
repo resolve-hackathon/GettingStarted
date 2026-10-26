@@ -1,5 +1,7 @@
 """Bounded JSON HTTP requests. POSTs are never automatically retried."""
 
+from __future__ import annotations
+
 import json
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
@@ -11,13 +13,15 @@ class ServiceError(RuntimeError):
 
 
 class JSONClient:
-    def __init__(self, base_url: str, token: str, *, timeout: float = 20):
+    def __init__(self, base_url: str, token: str, *, timeout: float = 20,
+                 user_agent: str = "resolve-hackathon-starter/0.1"):
         parsed = urlparse(base_url)
         if parsed.scheme != "https" and not (
             parsed.scheme == "http" and parsed.hostname in {"localhost", "127.0.0.1", "::1"}
         ):
             raise ValueError("API base URL must use HTTPS (local development may use HTTP)")
         self.base_url, self.token, self.timeout = base_url.rstrip("/"), token, timeout
+        self.user_agent = user_agent
 
     def request(self, method: str, path: str, body: dict | None = None):
         if not path.startswith("/") or path.startswith("//"):
@@ -26,7 +30,7 @@ class JSONClient:
         request = Request(self.base_url + path, data=data, method=method, headers={
             "Authorization": self.token,
             "Accept": "application/json", "Content-Type": "application/json",
-            "User-Agent": "resolve-hackathon-starter/0.1",
+            "User-Agent": self.user_agent,
         })
         try:
             with urlopen(request, timeout=self.timeout) as response:

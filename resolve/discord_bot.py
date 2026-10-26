@@ -15,7 +15,7 @@ def run_bot(database: Path, *, live: bool = False) -> None:
     try:
         import discord
     except ImportError:
-        raise ValueError('Install the optional bot dependency: python -m pip install -e ".[discord]"') from None
+        raise ValueError('Install the optional bot dependency: python3 -m pip install -e ".[discord]"') from None
     from .__main__ import build_agent
 
     required = ["DISCORD_TOKEN", "DISCORD_GUILD_ID", "DISCORD_SUPPORT_CHANNEL_ID"]
