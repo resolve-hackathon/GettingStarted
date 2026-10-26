@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .actions import DryRunActions, JournalActions, LiveActions
 from .config import runtime_dir
-from .research import SQLResearcher
+from .zetaris import make_researcher
 
 
 def run_bot(database: Path, *, live: bool = False) -> None:
@@ -32,7 +32,7 @@ def run_bot(database: Path, *, live: bool = False) -> None:
     intents.message_content = True
     client = discord.Client(intents=intents, allowed_mentions=discord.AllowedMentions.none())
     semaphore = asyncio.Semaphore(1)
-    researcher = SQLResearcher.local(database)
+    researcher = make_researcher(database)
 
     @client.event
     async def on_ready():
