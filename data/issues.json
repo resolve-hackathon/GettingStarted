@@ -1,5 +1,5 @@
 [
-  {"id":"GH-182","number":182,"component":"sync","state":"open","affects_version":"3.8.1","terms":["sync","stopped","stuck"],"workaround":"In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.","url":"https://example.invalid/cloudnest/issues/182"},
+  {"id":"GH-1","number":1,"component":"sync","state":"open","affects_version":"3.8.1","terms":["sync","stopped","stuck"],"workaround":"In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.","url":"https://github.com/resolve-hackathon/cloudnest/issues/1"},
   {"id":"GH-170","number":170,"component":"exports","state":"closed","affects_version":"3.7.3","terms":["blank"],"workaround":"Reset the date filter.","url":"https://example.invalid/cloudnest/issues/170"},
   {"id":"GH-175","number":175,"component":"upload","state":"closed","affects_version":"3.8.1","terms":["crash"],"workaround":"Upgrade to the patched client.","url":"https://example.invalid/cloudnest/issues/175"},
   {"id":"GH-180","number":180,"component":"search","state":"open","affects_version":"3.7.4","terms":["unicode"],"workaround":"Search using the exact filename.","url":"https://example.invalid/cloudnest/issues/180"},

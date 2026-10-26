@@ -54,7 +54,7 @@ class AcceptanceTests(unittest.TestCase):
         state = self.known_bug()
         for row in state.evidence:
             if row.source == "issues":
-                row.record["url"] = "https://github.com/demo/product/issues/182"
+                row.record["url"] = "https://github.com/demo/product/issues/1"
         return state
 
     def test_known_bug_links_workaround_and_comments(self):
@@ -62,12 +62,12 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(state.action, Action.LINK_ISSUE)
         self.assertTrue(state.verified)
         self.assertEqual(state.retries, 0)
-        github = FakeAPI([{"state": "open", "html_url": "https://github.com/demo/product/issues/182"}, {"id": 10}])
+        github = FakeAPI([{"state": "open", "html_url": "https://github.com/demo/product/issues/1"}, {"id": 10}])
         discord = FakeAPI([{"id": "42"}])
         result, text = self.live(github, discord).execute(state)
         self.assertEqual(result["status"], "completed")
         self.assertIn("Background sync", text)
-        self.assertEqual(github.calls[1][:2], ("POST", "/repos/demo/product/issues/182/comments"))
+        self.assertEqual(github.calls[1][:2], ("POST", "/repos/demo/product/issues/1/comments"))
         self.assertEqual(discord.calls[0][2]["message_reference"], {"message_id": "789"})
         self.assertEqual(discord.calls[0][2]["allowed_mentions"], {"parse": []})
 
@@ -195,7 +195,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(github.calls, [])
 
     def test_closed_live_issue_cannot_receive_a_comment(self):
-        github = FakeAPI([{"state": "closed", "html_url": "https://github.com/demo/product/issues/182"}])
+        github = FakeAPI([{"state": "closed", "html_url": "https://github.com/demo/product/issues/1"}])
         with self.assertRaises(ValueError):
             self.live(github).execute(self.live_bug())
         self.assertEqual(len(github.calls), 1)
@@ -264,7 +264,7 @@ class AcceptanceTests(unittest.TestCase):
                        for c in expected.claims],
         })
         api = FakeAPI([{"choices": [{"message": {
-            "content": "<think>GH-182 {matches} the version.</think>\n```json\n" + content + "\n```"}}]}])
+            "content": "<think>GH-1 {matches} the version.</think>\n```json\n" + content + "\n```"}}]}])
         state = self.known_bug()
         state.hypothesis = CompatibleReasoner(api, "test-model").propose(state)
         self.assertEqual(state.hypothesis.action, Action.LINK_ISSUE)

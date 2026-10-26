@@ -8,7 +8,7 @@ upload crash when resuming a paused transfer. No workaround is verified yet.
 ## 3.8.1 - 2026-10-20
 <!-- resolve: {"id":"3.8.1-sync","version":"3.8.1","component":"sync","terms":["sync","stopped","stuck"],"regression":false} -->
 The desktop sync worker was rewritten. A subset of Windows clients stop syncing
-after upgrading; the synthetic issue fixture GH-182 tracks this regression.
+after upgrading; CloudNest issue #1 (GH-1) tracks this regression.
 
 ## 3.8.0 - 2026-10-15
 <!-- resolve: {"id":"3.8.0-search","version":"3.8.0","component":"search","terms":["search","index"],"regression":false} -->

@@ -8,9 +8,9 @@ from resolve.config import data_dir
 
 # Mimic what Nemotron did: bare ids, retyped/paraphrased values, account left out of supporting_ids.
 ANSWERS = {
-    "c-031": {"action": "link_issue", "confidence": 0.95, "selected_id": "GH-182", "supporting_ids": ["GH-182"],
+    "c-031": {"action": "link_issue", "confidence": 0.95, "selected_id": "GH-1", "supporting_ids": ["GH-1"],
               "claims": [{"evidence_id": "accounts:c-031", "field": "client_version"},
-                         {"evidence_id": "GH-182", "field": "workaround", "value": "turn off background sync"}]},
+                         {"evidence_id": "GH-1", "field": "workaround", "value": "turn off background sync"}]},
     "c-002": {"action": "post_fix", "confidence": 0.9, "selected_id": "kb:KB-002", "supporting_ids": ["kb:KB-002"],
               "claims": [{"evidence_id": "c-002", "field": "client_version", "value": "3.7.4"},
                          {"evidence_id": "kb:KB-002", "field": "steps", "value": "Open Reports > Exports ..."}]},

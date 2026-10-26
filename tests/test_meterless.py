@@ -43,11 +43,11 @@ class MeterlessEngineTests(unittest.TestCase):
     def test_world_model_records_provenance_and_feeds_context(self):
         state = self.agent(CompletedActions()).run("Desktop sync stopped after the update", "c-031", "q1")
         lines = [json.loads(l) for l in (self.logs / "world.jsonl").read_text().splitlines()]
-        entity = next(l for l in lines if l["kind"] == "entity" and l["id"] == "issues:GH-182")
-        self.assertEqual(entity["provenance"]["rowId"], "GH-182")
+        entity = next(l for l in lines if l["kind"] == "entity" and l["id"] == "issues:GH-1")
+        self.assertEqual(entity["provenance"]["rowId"], "GH-1")
         self.assertEqual((entity["agentId"], entity["runId"]), ("researcher", "q1"))
         self.assertTrue(any(l["kind"] == "relationship" and l["type"] == "affects" for l in lines))
-        self.assertIn("issues:GH-182", [e["id"] for e in state.world_context["entities"]])
+        self.assertIn("issues:GH-1", [e["id"] for e in state.world_context["entities"]])
         self.assertTrue((self.logs / "run_manifest.jsonl").exists())
 
     def test_memory_prevents_duplicate_issue_comment_for_same_customer(self):

@@ -39,8 +39,10 @@ python3 -m resolve ask --customer-id c-004 "My workspace turns purple at midnigh
 Expected actions: `link_issue`, `post_fix`, `open_issue`, `escalate`.
 Dry-run results have `status: dry_run`, contain the intended payload, and return
 no invented remote message IDs or issue numbers. They do not contact Discord or
-GitHub. The fixture GH-182 uses an intentionally non-working `example.invalid`
-URL; it is not a claim that issue 182 exists in your repository.
+GitHub. GH-1 is a real open issue in the demo product repository,
+[resolve-hackathon/cloudnest#1](https://github.com/resolve-hackathon/cloudnest/issues/1);
+the other issue fixtures use non-working `example.invalid` URLs, which live mode
+refuses to comment on.
 
 ## What is implemented
 
