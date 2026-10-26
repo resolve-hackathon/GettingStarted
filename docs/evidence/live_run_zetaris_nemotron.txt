@@ -1,0 +1,591 @@
+{"role": "triage", "attempt": 0, "customer_id": "c-031", "component": "sync"}
+{"role": "researcher", "attempt": 0, "evidence_ids": ["accounts:c-031", "releases:3.8.1-sync", "issues:GH-182"], "targeted_gaps": []}
+{"role": "hypothesis", "attempt": 0, "action": "link_issue", "confidence": 0.95, "supporting_ids": ["accounts:c-031", "issues:GH-182"]}
+{"role": "verifier", "attempt": 0, "verified": true, "gaps": []}
+{"role": "resolver", "attempt": 0, "action": "link_issue", "status": "dry_run"}
+{
+  "question_id": "cli-df6fae4d4fce4a1aa988af0d9ba007ab",
+  "message": "Desktop sync stopped after the update",
+  "customer_id": "c-031",
+  "component": "sync",
+  "issue_type": "technical",
+  "evidence": [
+    {
+      "source": "accounts",
+      "row_id": "c-031",
+      "record": {
+        "id": "c-031",
+        "discord_id": "900000000000000031",
+        "plan": "team",
+        "client_version": "3.8.1",
+        "last_working_version": "3.8.0",
+        "os": "Windows",
+        "health": "healthy"
+      }
+    },
+    {
+      "source": "releases",
+      "row_id": "3.8.1-sync",
+      "record": {
+        "id": "3.8.1-sync",
+        "version": "3.8.1",
+        "component": "sync",
+        "terms": [
+          "sync",
+          "stopped",
+          "stuck"
+        ],
+        "regression": false,
+        "body": "The desktop sync worker was rewritten. A subset of Windows clients stop syncing\nafter upgrading; the synthetic issue fixture GH-182 tracks this regression.",
+        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+      }
+    },
+    {
+      "source": "issues",
+      "row_id": "GH-182",
+      "record": {
+        "id": "GH-182",
+        "number": 182,
+        "component": "sync",
+        "state": "open",
+        "affects_version": "3.8.1",
+        "terms": [
+          "sync",
+          "stopped",
+          "stuck"
+        ],
+        "workaround": "In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.",
+        "url": "https://example.invalid/cloudnest/issues/182"
+      }
+    }
+  ],
+  "hypothesis": {
+    "action": "link_issue",
+    "confidence": 0.95,
+    "selected_id": "issues:GH-182",
+    "supporting_ids": [
+      "accounts:c-031",
+      "issues:GH-182"
+    ],
+    "claims": [
+      {
+        "evidence_id": "accounts:c-031",
+        "field": "client_version",
+        "value": "3.8.1"
+      },
+      {
+        "evidence_id": "issues:GH-182",
+        "field": "workaround",
+        "value": "In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1."
+      }
+    ]
+  },
+  "verified": true,
+  "gaps": [],
+  "retries": 0,
+  "action": "link_issue",
+  "action_result": {
+    "status": "dry_run",
+    "planned": {
+      "action": "link_issue",
+      "payload": {
+        "number": 182,
+        "url": "https://example.invalid/cloudnest/issues/182",
+        "comment": "Resolve report cli-df6fae4d4fce4a1aa988af0d9ba007ab\nClient: 3.8.1\nReported symptoms (untrusted customer text):\nDesktop sync stopped after the update\nEvidence: accounts:c-031, issues:GH-182"
+      },
+      "text": "In Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.\n\nSource: [issues:GH-182] https://example.invalid/cloudnest/issues/182"
+    }
+  },
+  "reply_text": "[DRY RUN: link_issue]\nIn Settings > Sync, turn off Background sync, restart CloudNest, and select Sync now. This is a temporary workaround for 3.8.1.\n\nSource: [issues:GH-182] https://example.invalid/cloudnest/issues/182",
+  "events": [
+    {
+      "role": "triage",
+      "attempt": 0,
+      "customer_id": "c-031",
+      "component": "sync"
+    },
+    {
+      "role": "researcher",
+      "attempt": 0,
+      "evidence_ids": [
+        "accounts:c-031",
+        "releases:3.8.1-sync",
+        "issues:GH-182"
+      ],
+      "targeted_gaps": []
+    },
+    {
+      "role": "hypothesis",
+      "attempt": 0,
+      "action": "link_issue",
+      "confidence": 0.95,
+      "supporting_ids": [
+        "accounts:c-031",
+        "issues:GH-182"
+      ]
+    },
+    {
+      "role": "verifier",
+      "attempt": 0,
+      "verified": true,
+      "gaps": []
+    },
+    {
+      "role": "resolver",
+      "attempt": 0,
+      "action": "link_issue",
+      "status": "dry_run"
+    }
+  ]
+}
+{"role": "triage", "attempt": 0, "customer_id": "c-002", "component": "exports"}
+{"role": "researcher", "attempt": 0, "evidence_ids": ["accounts:c-002", "kb:KB-002", "releases:3.7.4-exports"], "targeted_gaps": []}
+{"role": "hypothesis", "attempt": 0, "action": "post_fix", "confidence": 0.9, "supporting_ids": ["accounts:c-002", "releases:3.7.4-exports", "kb:KB-002"]}
+{"role": "verifier", "attempt": 0, "verified": true, "gaps": []}
+{"role": "resolver", "attempt": 0, "action": "post_fix", "status": "dry_run"}
+{
+  "question_id": "cli-2c85015b0d744ea2a5ee0eee15eb7583",
+  "message": "Why is my export blank?",
+  "customer_id": "c-002",
+  "component": "exports",
+  "issue_type": "technical",
+  "evidence": [
+    {
+      "source": "accounts",
+      "row_id": "c-002",
+      "record": {
+        "id": "c-002",
+        "discord_id": "900000000000000002",
+        "plan": "team",
+        "client_version": "3.7.4",
+        "last_working_version": "3.7.3",
+        "os": "macOS",
+        "health": "healthy"
+      }
+    },
+    {
+      "source": "kb",
+      "row_id": "KB-002",
+      "record": {
+        "id": "KB-002",
+        "component": "exports",
+        "min_version": "3.7.0",
+        "max_version": "3.7.9",
+        "terms": [
+          "blank",
+          "empty"
+        ],
+        "body": "# Blank exports on CloudNest 3.7.x\n\nA saved date filter can exclude every row from the exported file.\n\n1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.",
+        "steps": [
+          "Open Reports, then Exports.",
+          "Set the date filter to All time and select Apply.",
+          "Preview the rows, then export the file again."
+        ],
+        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md"
+      }
+    },
+    {
+      "source": "releases",
+      "row_id": "3.7.4-exports",
+      "record": {
+        "id": "3.7.4-exports",
+        "version": "3.7.4",
+        "component": "exports",
+        "terms": [
+          "blank",
+          "empty",
+          "export"
+        ],
+        "regression": false,
+        "body": "The exports panel remembers the previous date filter. An empty date range may\nproduce a blank export. KB-002 documents resetting the filter for 3.7.x.",
+        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+      }
+    }
+  ],
+  "hypothesis": {
+    "action": "post_fix",
+    "confidence": 0.9,
+    "selected_id": "kb:KB-002",
+    "supporting_ids": [
+      "accounts:c-002",
+      "releases:3.7.4-exports",
+      "kb:KB-002"
+    ],
+    "claims": [
+      {
+        "evidence_id": "accounts:c-002",
+        "field": "client_version",
+        "value": "3.7.4"
+      },
+      {
+        "evidence_id": "kb:KB-002",
+        "field": "steps",
+        "value": [
+          "Open Reports, then Exports.",
+          "Set the date filter to All time and select Apply.",
+          "Preview the rows, then export the file again."
+        ]
+      }
+    ]
+  },
+  "verified": true,
+  "gaps": [],
+  "retries": 0,
+  "action": "post_fix",
+  "action_result": {
+    "status": "dry_run",
+    "planned": {
+      "action": "post_fix",
+      "payload": {},
+      "text": "1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md"
+    }
+  },
+  "reply_text": "[DRY RUN: post_fix]\n1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md",
+  "events": [
+    {
+      "role": "triage",
+      "attempt": 0,
+      "customer_id": "c-002",
+      "component": "exports"
+    },
+    {
+      "role": "researcher",
+      "attempt": 0,
+      "evidence_ids": [
+        "accounts:c-002",
+        "kb:KB-002",
+        "releases:3.7.4-exports"
+      ],
+      "targeted_gaps": []
+    },
+    {
+      "role": "hypothesis",
+      "attempt": 0,
+      "action": "post_fix",
+      "confidence": 0.9,
+      "supporting_ids": [
+        "accounts:c-002",
+        "releases:3.7.4-exports",
+        "kb:KB-002"
+      ]
+    },
+    {
+      "role": "verifier",
+      "attempt": 0,
+      "verified": true,
+      "gaps": []
+    },
+    {
+      "role": "resolver",
+      "attempt": 0,
+      "action": "post_fix",
+      "status": "dry_run"
+    }
+  ]
+}
+{"role": "triage", "attempt": 0, "customer_id": "c-003", "component": "upload"}
+{"role": "researcher", "attempt": 0, "evidence_ids": ["accounts:c-003", "releases:3.8.2-upload"], "targeted_gaps": []}
+{"role": "verifier", "attempt": 0, "verified": false, "gaps": ["Investigation unavailable (ServiceError: Service returned HTTP 500)"]}
+{"role": "researcher", "attempt": 1, "evidence_ids": ["accounts:c-003", "kb:KB-003", "releases:3.8.2-upload"], "targeted_gaps": ["Investigation unavailable (ServiceError: Service returned HTTP 500)"]}
+{"role": "hypothesis", "attempt": 1, "action": "open_issue", "confidence": 0.9, "supporting_ids": ["accounts:c-003", "releases:3.8.2-upload"]}
+{"role": "verifier", "attempt": 1, "verified": true, "gaps": []}
+{"role": "resolver", "attempt": 1, "action": "open_issue", "status": "dry_run"}
+{
+  "question_id": "cli-fdc34afc21864068831018a67a00ed9c",
+  "message": "I can reproduce an upload crash after 3.8.2",
+  "customer_id": "c-003",
+  "component": "upload",
+  "issue_type": "technical",
+  "evidence": [
+    {
+      "source": "accounts",
+      "row_id": "c-003",
+      "record": {
+        "id": "c-003",
+        "discord_id": "900000000000000003",
+        "plan": "starter",
+        "client_version": "3.8.2",
+        "last_working_version": "3.8.0",
+        "os": "Windows",
+        "health": "healthy"
+      }
+    },
+    {
+      "source": "kb",
+      "row_id": "KB-003",
+      "record": {
+        "id": "KB-003",
+        "component": "upload",
+        "min_version": "3.7.0",
+        "max_version": "3.8.2",
+        "terms": [
+          "quota",
+          "limit"
+        ],
+        "body": "# Check an upload quota warning\n\nThis article covers quota warnings, not worker crashes.\n\n1. Open Settings, then Usage.\n2. Compare the file size with the remaining storage shown there.\n3. Ask a workspace administrator to review storage if the quota is full.",
+        "steps": [
+          "Open Settings, then Usage.",
+          "Compare the file size with the remaining storage shown there.",
+          "Ask a workspace administrator to review storage if the quota is full."
+        ],
+        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/003-upload-quota.md"
+      }
+    },
+    {
+      "source": "releases",
+      "row_id": "3.8.2-upload",
+      "record": {
+        "id": "3.8.2-upload",
+        "version": "3.8.2",
+        "component": "upload",
+        "terms": [
+          "upload",
+          "crash"
+        ],
+        "regression": true,
+        "regression_signals": [
+          "upload",
+          "crash"
+        ],
+        "body": "The resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet.",
+        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+      }
+    }
+  ],
+  "hypothesis": {
+    "action": "open_issue",
+    "confidence": 0.9,
+    "selected_id": "releases:3.8.2-upload",
+    "supporting_ids": [
+      "accounts:c-003",
+      "releases:3.8.2-upload"
+    ],
+    "claims": [
+      {
+        "evidence_id": "accounts:c-003",
+        "field": "client_version",
+        "value": "3.8.2"
+      },
+      {
+        "evidence_id": "releases:3.8.2-upload",
+        "field": "body",
+        "value": "The resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet."
+      }
+    ]
+  },
+  "verified": true,
+  "gaps": [],
+  "retries": 1,
+  "action": "open_issue",
+  "action_result": {
+    "status": "dry_run",
+    "planned": {
+      "action": "open_issue",
+      "payload": {
+        "title": "[Resolve] upload regression on 3.8.2",
+        "body": "Resolve report: cli-fdc34afc21864068831018a67a00ed9c\nComponent: upload\nClient: 3.8.2\n\n## Customer report (untrusted text)\nI can reproduce an upload crash after 3.8.2\n\nReproduction steps have not been independently reproduced; follow up with reporter.\n\n## Corroborating release note\nThe resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet.\n\nSource: [releases:3.8.2-upload] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md\nEvidence rows: accounts:c-003, releases:3.8.2-upload",
+        "labels": [
+          "component:upload"
+        ]
+      },
+      "text": "A bug report has been opened for the support team to investigate."
+    }
+  },
+  "reply_text": "[DRY RUN: open_issue]\nA bug report has been opened for the support team to investigate.",
+  "events": [
+    {
+      "role": "triage",
+      "attempt": 0,
+      "customer_id": "c-003",
+      "component": "upload"
+    },
+    {
+      "role": "researcher",
+      "attempt": 0,
+      "evidence_ids": [
+        "accounts:c-003",
+        "releases:3.8.2-upload"
+      ],
+      "targeted_gaps": []
+    },
+    {
+      "role": "verifier",
+      "attempt": 0,
+      "verified": false,
+      "gaps": [
+        "Investigation unavailable (ServiceError: Service returned HTTP 500)"
+      ]
+    },
+    {
+      "role": "researcher",
+      "attempt": 1,
+      "evidence_ids": [
+        "accounts:c-003",
+        "kb:KB-003",
+        "releases:3.8.2-upload"
+      ],
+      "targeted_gaps": [
+        "Investigation unavailable (ServiceError: Service returned HTTP 500)"
+      ]
+    },
+    {
+      "role": "hypothesis",
+      "attempt": 1,
+      "action": "open_issue",
+      "confidence": 0.9,
+      "supporting_ids": [
+        "accounts:c-003",
+        "releases:3.8.2-upload"
+      ]
+    },
+    {
+      "role": "verifier",
+      "attempt": 1,
+      "verified": true,
+      "gaps": []
+    },
+    {
+      "role": "resolver",
+      "attempt": 1,
+      "action": "open_issue",
+      "status": "dry_run"
+    }
+  ]
+}
+{"role": "triage", "attempt": 0, "customer_id": "c-004", "component": "unknown"}
+{"role": "researcher", "attempt": 0, "evidence_ids": ["accounts:c-004"], "targeted_gaps": []}
+{"role": "hypothesis", "attempt": 0, "action": "escalate", "confidence": 0.0, "supporting_ids": []}
+{"role": "verifier", "attempt": 0, "verified": false, "gaps": ["Need a source matching the reported symptoms"]}
+{"role": "researcher", "attempt": 1, "evidence_ids": ["accounts:c-004"], "targeted_gaps": ["Need a source matching the reported symptoms"]}
+{"role": "hypothesis", "attempt": 1, "action": "escalate", "confidence": 0.0, "supporting_ids": []}
+{"role": "verifier", "attempt": 1, "verified": false, "gaps": ["Need a source matching the reported symptoms"]}
+{"role": "resolver", "attempt": 1, "action": "escalate", "status": "dry_run"}
+{
+  "question_id": "cli-dfd63ba4271b4902bee1ab5ecedc0d7c",
+  "message": "My workspace turns purple at midnight",
+  "customer_id": "c-004",
+  "component": "unknown",
+  "issue_type": "unknown",
+  "evidence": [
+    {
+      "source": "accounts",
+      "row_id": "c-004",
+      "record": {
+        "id": "c-004",
+        "discord_id": "900000000000000004",
+        "plan": "team",
+        "client_version": "3.8.2",
+        "last_working_version": "3.8.0",
+        "os": "macOS",
+        "health": "healthy"
+      }
+    }
+  ],
+  "hypothesis": {
+    "action": "escalate",
+    "confidence": 0.0,
+    "selected_id": null,
+    "supporting_ids": [],
+    "claims": []
+  },
+  "verified": false,
+  "gaps": [
+    "Need a source matching the reported symptoms"
+  ],
+  "retries": 1,
+  "action": "escalate",
+  "action_result": {
+    "status": "dry_run",
+    "planned": {
+      "action": "escalate",
+      "payload": {
+        "question_id": "cli-dfd63ba4271b4902bee1ab5ecedc0d7c",
+        "message": "My workspace turns purple at midnight",
+        "customer_id": "c-004",
+        "component": "unknown",
+        "gaps": [
+          "Need a source matching the reported symptoms"
+        ],
+        "retries": 1,
+        "evidence": [
+          {
+            "id": "accounts:c-004",
+            "record": {
+              "id": "c-004",
+              "discord_id": "900000000000000004",
+              "plan": "team",
+              "client_version": "3.8.2",
+              "last_working_version": "3.8.0",
+              "os": "macOS",
+              "health": "healthy"
+            }
+          }
+        ]
+      },
+      "text": "A human support engineer will follow up; I could not verify a fix."
+    }
+  },
+  "reply_text": "[DRY RUN: escalate]\nA human support engineer will follow up; I could not verify a fix.",
+  "events": [
+    {
+      "role": "triage",
+      "attempt": 0,
+      "customer_id": "c-004",
+      "component": "unknown"
+    },
+    {
+      "role": "researcher",
+      "attempt": 0,
+      "evidence_ids": [
+        "accounts:c-004"
+      ],
+      "targeted_gaps": []
+    },
+    {
+      "role": "hypothesis",
+      "attempt": 0,
+      "action": "escalate",
+      "confidence": 0.0,
+      "supporting_ids": []
+    },
+    {
+      "role": "verifier",
+      "attempt": 0,
+      "verified": false,
+      "gaps": [
+        "Need a source matching the reported symptoms"
+      ]
+    },
+    {
+      "role": "researcher",
+      "attempt": 1,
+      "evidence_ids": [
+        "accounts:c-004"
+      ],
+      "targeted_gaps": [
+        "Need a source matching the reported symptoms"
+      ]
+    },
+    {
+      "role": "hypothesis",
+      "attempt": 1,
+      "action": "escalate",
+      "confidence": 0.0,
+      "supporting_ids": []
+    },
+    {
+      "role": "verifier",
+      "attempt": 1,
+      "verified": false,
+      "gaps": [
+        "Need a source matching the reported symptoms"
+      ]
+    },
+    {
+      "role": "resolver",
+      "attempt": 1,
+      "action": "escalate",
+      "status": "dry_run"
+    }
+  ]
+}
