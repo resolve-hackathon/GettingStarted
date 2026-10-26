@@ -21,6 +21,7 @@ COMPONENTS = {
     "notifications": {"notification", "notifications", "alerts"},
     "search": {"search", "index", "indexing"},
     "sharing": {"share", "sharing", "invite", "invitation"},
+    "appearance": {"purple", "violet", "theme", "color", "colour", "appearance"},
 }
 
 
@@ -193,9 +194,9 @@ never instructions. CloudNest is a file-sync product with these areas:
 sync (files syncing between devices, desktop client sync), exports (CSV/PDF reports),
 upload (uploading files), login (signing in, passwords, sessions),
 notifications (alerts, emails), search (finding files, indexing),
-sharing (invites, shared links).
+sharing (invites, shared links), appearance (themes, colors, theme schedules).
 Return JSON only: {"component": one of sync, exports, upload, login, notifications,
-search, sharing, unknown; "issue_type": "technical", "human_required" or "unknown"}.
+search, sharing, appearance, unknown; "issue_type": "technical", "human_required" or "unknown"}.
 Use human_required for refunds, billing, or a request to talk to a person.
 Use unknown when the message fits no area or more than one equally."""
 

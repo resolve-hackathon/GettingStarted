@@ -97,7 +97,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("/issues/200", text)
 
     def test_unknown_retries_once_and_posts_evidence_packet(self):
-        state = self.ask("The workspace turns purple at midnight", "c-004")
+        state = self.ask("The desktop app shows all my folders in Spanish", "c-004")
         self.assertEqual(state.action, Action.ESCALATE)
         self.assertFalse(state.verified)
         self.assertEqual(state.retries, 1)
@@ -110,6 +110,20 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("gaps", discord.calls[0][2]["content"])
         self.assertIn("could not verify a fix", text)
         self.assertEqual(result["status"], "completed")
+
+    def test_purple_midnight_posts_verified_kb_fix_without_github_actions(self):
+        for report in ("My workspace turns purple at midnight", "My workspace turns violet at 12am"):
+            with self.subTest(report=report):
+                state = self.ask(report, "c-004")
+                self.assertEqual(state.action, Action.POST_FIX)
+                self.assertTrue(state.verified)
+                self.assertEqual(state.hypothesis.selected_id, "kb:KB-011")
+                self.assertIn("Theme schedule", state.reply_text)
+                self.assertIn("resolve-agent/blob/main/data/kb/011-purple-workspace-midnight.md", state.reply_text)
+                github = FakeAPI([])
+                discord = FakeAPI([{"id": "42"}])
+                self.live(github, discord).execute(state)
+                self.assertEqual(github.calls, [])
 
     def test_all_ten_eval_cases(self):
         cases = json.loads((ROOT / "data/eval_cases.json").read_text())
@@ -270,10 +284,10 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(state.hypothesis.action, Action.LINK_ISSUE)
         self.assertEqual(verify_structure(state), [])
 
-    def test_seed_has_fifty_accounts_ten_articles_and_ten_issues(self):
+    def test_seed_has_fifty_accounts_eleven_articles_and_ten_issues(self):
         import sqlite3
         with sqlite3.connect(self.database) as connection:
-            for table, count in (("accounts", 50), ("kb", 10), ("issues", 10), ("releases", 6)):
+            for table, count in (("accounts", 50), ("kb", 11), ("issues", 10), ("releases", 6)):
                 self.assertEqual(connection.execute(f"SELECT count(*) FROM {table}").fetchone()[0], count)
 
 

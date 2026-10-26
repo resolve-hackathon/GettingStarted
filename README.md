@@ -34,7 +34,8 @@ release or a known bug. And when they are wrong, they are confidently wrong.
 | "Sync is still stuck" (same customer, later) | Its own memory of the first report | Answers, **without commenting on the issue twice** |
 | "Why is my export blank?" | Account on 3.7.4, KB article for 3.7.x | Posts the three fix steps with a link to the article |
 | "Uploads crash since 3.8.2" | A documented 3.8.2 upload regression, no open issue | **Opens a new GitHub issue** with the evidence |
-| "My workspace turns purple at midnight" | Nothing that supports an answer | Retries once, then **escalates** with an evidence packet |
+| "My workspace turns purple at midnight" | Account on 3.8.2, the theme-schedule KB article | Posts the steps to turn off the scheduled theme |
+| "The desktop app shows all my folders in Spanish" | Nothing that supports an answer | Retries once, then **escalates** with an evidence packet |
 | Anything, from an unlinked Discord user | No account | Escalates; never trusts an account ID typed in chat |
 
 Every reply cites its source. Every decision is logged with the rows that support it.
@@ -108,7 +109,7 @@ python3 -m unittest discover -s tests
 ```
 
 `demo` runs four scenarios end to end and prints each full task state, including the
-`events` trail and the World Model context. `eval` runs 11 labelled questions. Both use
+`events` trail and the World Model context. `eval` runs 12 labelled questions. Both use
 the deterministic offline baseline and dry-run actions, so they never contact any
 service, even if you have configured one.
 
@@ -118,7 +119,7 @@ Try single questions:
 python3 -m resolve ask --customer-id c-031 "Desktop sync stopped after the update" --trace
 python3 -m resolve ask --customer-id c-002 "Why is my export blank?"
 python3 -m resolve ask --customer-id c-003 "I can reproduce an upload crash after 3.8.2"
-python3 -m resolve ask --customer-id c-004 "My workspace turns purple at midnight"
+python3 -m resolve ask --customer-id c-004 "The desktop app shows all my folders in Spanish"
 ```
 
 Expected: `link_issue`, `post_fix`, `open_issue`, `escalate`.
@@ -235,7 +236,7 @@ retrying with a new ID.
 | [docs/evidence/live_run_zetaris_nemotron.txt](docs/evidence/live_run_zetaris_nemotron.txt) | Four scenarios run through live Zetaris and Nemotron, with full event trails |
 | `logs/world.jsonl`, `logs/run_manifest.jsonl` | World Model entities, relationships, decisions, and wired services (written at run time) |
 | `logs/memory_audit.jsonl` | H-MEM writes per run (written at run time) |
-| `tests/` | 38 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
+| `tests/` | 40 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
 
 ## Project layout
 

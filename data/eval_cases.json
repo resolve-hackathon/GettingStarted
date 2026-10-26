@@ -32,7 +32,7 @@
   {
     "id": "no-evidence",
     "customer_id": "c-004",
-    "message": "My workspace turns purple at midnight",
+    "message": "The desktop app shows all my folders in Spanish",
     "expected_action": "escalate"
   },
   {
@@ -64,5 +64,11 @@
     "customer_id": "c-031",
     "message": "my desktop app quit syncing since yesterday's upgrade",
     "expected_action": "link_issue"
+  },
+  {
+    "id": "purple-at-midnight",
+    "customer_id": "c-004",
+    "message": "My workspace turns purple at midnight",
+    "expected_action": "post_fix"
   }
 ]

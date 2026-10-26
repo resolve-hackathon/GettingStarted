@@ -68,6 +68,14 @@ class PlainLanguageTests(unittest.TestCase):
         self.run_agent(model, "I can't log in anymore")
         self.assertTrue({"kb:KB-004", "kb:KB-010"} <= set(model.seen))
 
+    def test_model_can_route_to_appearance(self):
+        model = FakeModel({"component": "appearance", "issue_type": "technical"},
+                          {"action": "escalate", "confidence": 0, "selected_id": None,
+                           "supporting_ids": [], "claims": []})
+        state = self.run_agent(model, "everything goes violet around 12am", customer="c-004")
+        self.assertEqual(state.component, "appearance")
+        self.assertIn("kb:KB-011", model.seen)
+
     def test_bad_model_triage_falls_back_to_keywords(self):
         model = FakeModel({"component": "teleportation", "issue_type": "technical"}, LINK_GH1)
         state = self.run_agent(model, "my desktop app quit syncing")
