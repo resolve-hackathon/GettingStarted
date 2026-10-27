@@ -175,7 +175,12 @@ contains EVERY open issue for this component and client version; if no issue row
 are present, none exist. Do not ask to search the issue tracker again.
 
 Standards per action:
-- post_fix: the KB row applies to this client version and addresses the symptom.
+- post_fix: the KB row applies to this client version and addresses the symptom
+  or the cause the customer states (for example "forgot my password" matches a
+  password-reset article, even if they also say they cannot log in). Posting steps
+  is low-risk and the customer can reply if it does not help, so do not require
+  them to confirm anything the steps themselves cover (reaching a screen, trying a
+  flow). If two articles apply, accept the one matching the stated cause.
 - link_issue: the open issue affects this exact client version and matches the symptom.
 - open_issue: a bug report for engineers to investigate, not a diagnosis. It is
   justified when a release row documents a regression in this component for this
@@ -186,6 +191,9 @@ Standards per action:
 
 Return JSON only:
 {"verified": true or false, "gaps": ["missing fact or specific search term"]}.
+Reject only for a concrete problem: a claimed value is wrong, the row does not apply
+to this version, the issue state is wrong, or the row clearly describes a different
+problem. Do not reject for missing confirmations or hypothetical doubts.
 If any assertion is unsupported, verified must be false. No invented facts."""
 
 

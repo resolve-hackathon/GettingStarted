@@ -88,7 +88,7 @@ flowchart LR
 | **Meterless: World Model** | `WorldStoreService`, `IngestPipelineService`, `ContextBuilderService`. Every Zetaris row becomes an entity with provenance (source, row, via) and agent attribution (role, run, attempt), with typed relationships. The context builder's payload is what Nemotron reasons over. | `resolve/world_model.py`, `logs/world.jsonl`, `logs/run_manifest.jsonl` |
 | **Meterless: H-MEM** | `MemoryStoreService`, `MemoryRetrievalService`. Tiered memory with warm start and hybrid retrieval. Prior resolutions are injected into the model context, and a confirmed earlier report stops Resolve from commenting on the same issue twice. | `resolve/memory.py`, `logs/memory_audit.jsonl` |
 | **Meterless Nightshift** | The primary AI provider. Every model call goes to Nightshift (OpenAI format, `meterless-app: resolve`), which serves Nemotron through the NVIDIA key in its Providers tab. | `resolve/reasoning.py` (`from_nightshift`), `tests/test_nightshift.py` |
-| **NVIDIA Nemotron** | `nvidia/nemotron-3.5-lightning-30b-a3b`, through Nightshift, does triage, the hypothesis, and the independent verifier audit. The serving model is logged for every request. | `resolve/reasoning.py` |
+| **NVIDIA Nemotron** | `nvidia/nemotron-3-ultra-550b-a55b`, through Nightshift, does triage, the hypothesis, and the independent verifier audit. The serving model is logged for every request. | `resolve/reasoning.py` |
 | **Cursor** (optional) | _If you built with Cursor, say how here; otherwise delete this row._ | |
 
 Details for each integration, including what is not implemented:
@@ -143,14 +143,14 @@ The NVIDIA key never goes in this project.
 RESOLVE_MODEL_MODE=nightshift
 METERLESS_BASE_URL=http://127.0.0.1:8088/v1
 METERLESS_RUNTIME_TOKEN=...
-METERLESS_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
+METERLESS_MODEL=nvidia/nemotron-3-ultra-550b-a55b
 ```
 
 Resolve requests the Nemotron model explicitly rather than `meterless/auto`, and every
 model call is logged with the step, the provider, and the model that served it
 (`"role": "model"` events in `--trace` output). Resolve asks Nemotron to answer without extended
 thinking (`chat_template_kwargs.enable_thinking=false`): measured through Nightshift,
-that is about 2 seconds per call instead of 40+ seconds and empty answers.
+that is about 12 seconds per call with Ultra, instead of 40+ seconds and empty answers.
 `scripts/probe_nightshift.py` reproduces the measurement. Calls retry once after a pause; a
 malformed or unavailable answer escalates rather than guessing.
 

@@ -61,7 +61,7 @@
     },
     "nvidia": {
       "used": true,
-      "model": "nvidia/nemotron-3.5-lightning-30b-a3b, through Meterless Nightshift",
+      "model": "nvidia/nemotron-3-ultra-550b-a55b, through Meterless Nightshift",
       "where": "resolve/reasoning.py",
       "how": "Nemotron does triage, proposes the outcome and independently audits it; a hard verifier still checks every claim against source rows. Logs record the serving model per request."
     },
