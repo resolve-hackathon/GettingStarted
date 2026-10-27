@@ -89,7 +89,6 @@ flowchart LR
 | **Meterless: H-MEM** | `MemoryStoreService`, `MemoryRetrievalService`. Tiered memory with warm start and hybrid retrieval. Prior resolutions are injected into the model context, and a confirmed earlier report stops Resolve from commenting on the same issue twice. | `resolve/memory.py`, `logs/memory_audit.jsonl` |
 | **Meterless Nightshift** | The primary AI provider. Every model call goes to Nightshift (OpenAI format, `meterless-app: resolve`), which serves Nemotron through the NVIDIA key in its Providers tab. | `resolve/reasoning.py` (`from_nightshift`), `tests/test_nightshift.py` |
 | **NVIDIA Nemotron** | `nvidia/nemotron-3-ultra-550b-a55b`, through Nightshift, does triage, the hypothesis, and the independent verifier audit. The serving model is logged for every request. | `resolve/reasoning.py` |
-| **Cursor** (optional) | _If you built with Cursor, say how here; otherwise delete this row._ | |
 
 Details for each integration, including what is not implemented:
 [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md). Machine-readable summary: [metadata.json](metadata.json).
@@ -137,7 +136,6 @@ Copy the config and edit it: `cp .env.example .env`. Never commit `.env`.
 Nightshift is the app's AI provider. Install it from [meterless.ai](https://meterless.ai),
 add your NVIDIA key (from [build.nvidia.com](https://build.nvidia.com/settings/api-keys))
 in Nightshift's **Providers** tab, and copy the runtime token from its **Console**.
-The NVIDIA key never goes in this project.
 
 ```dotenv
 RESOLVE_MODEL_MODE=nightshift
