@@ -135,7 +135,7 @@ Create a key at [build.nvidia.com](https://build.nvidia.com/settings/api-keys), 
 RESOLVE_MODEL_MODE=compatible
 MODEL_BASE_URL=https://integrate.api.nvidia.com/v1
 MODEL_API_KEY=nvapi-...
-MODEL_NAME=nvidia/nemotron-3-super-120b-a12b
+MODEL_NAME=nvidia/nemotron-3.5-super-vl-120b-a12b
 MODEL_TIMEOUT_SECONDS=60
 ```
 
