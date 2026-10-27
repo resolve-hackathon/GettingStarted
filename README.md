@@ -87,7 +87,9 @@ flowchart LR
 | **Zetaris** | The four sources are four separate databases, registered as four Zetaris datasources. The researcher sends one federated statement over the Zetaris REST API. The query plan shows four independent scans with filters **pushed down to each source**: nothing is copied. | `resolve/zetaris.py`, `sql/research_zetaris.sql`, `zetaris/`, [query plan](docs/evidence/zetaris_query_plan.txt) |
 | **Meterless: World Model** | `WorldStoreService`, `IngestPipelineService`, `ContextBuilderService`. Every Zetaris row becomes an entity with provenance (source, row, via) and agent attribution (role, run, attempt), with typed relationships. The context builder's payload is what Nemotron reasons over. | `resolve/world_model.py`, `logs/world.jsonl`, `logs/run_manifest.jsonl` |
 | **Meterless: H-MEM** | `MemoryStoreService`, `MemoryRetrievalService`. Tiered memory with warm start and hybrid retrieval. Prior resolutions are injected into the model context, and a confirmed earlier report stops Resolve from commenting on the same issue twice. | `resolve/memory.py`, `logs/memory_audit.jsonl` |
-| **NVIDIA Nemotron** | `nvidia/nemotron-3.5-super-vl-120b-a12b` on build.nvidia.com does triage, the hypothesis, and the independent verifier audit. | `resolve/reasoning.py` |
+| **Meterless Nightshift** | The primary AI provider. Every model call goes to Nightshift (OpenAI format, `meterless-app: resolve`), which serves Nemotron through the NVIDIA key in its Providers tab. | `resolve/reasoning.py` (`from_nightshift`), `tests/test_nightshift.py` |
+| **NVIDIA Nemotron** | `nvidia/nemotron-3.5-lightning-30b-a3b`, through Nightshift, does triage, the hypothesis, and the independent verifier audit. The serving model is logged for every request. | `resolve/reasoning.py` |
+| **Cursor** (optional) | _If you built with Cursor, say how here; otherwise delete this row._ | |
 
 Details for each integration, including what is not implemented:
 [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md). Machine-readable summary: [metadata.json](metadata.json).
@@ -106,6 +108,9 @@ python3 -m resolve demo --trace
 python3 -m resolve eval
 python3 -m unittest discover -s tests
 ```
+
+Set `SAMPLE_MODE=true` to force the same offline path for every command, even with
+services configured.
 
 `demo` runs four scenarios end to end and prints each full task state, including the
 `events` trail and the World Model context. `eval` runs 12 labelled questions. Both use
@@ -127,20 +132,27 @@ Expected: `link_issue`, `post_fix`, `open_issue`, `escalate`.
 
 Copy the config and edit it: `cp .env.example .env`. Never commit `.env`.
 
-### 1. Nemotron
+### 1. Meterless Nightshift and Nemotron
 
-Create a key at [build.nvidia.com](https://build.nvidia.com/settings/api-keys), then:
+Nightshift is the app's AI provider. Install it from [meterless.ai](https://meterless.ai),
+add your NVIDIA key (from [build.nvidia.com](https://build.nvidia.com/settings/api-keys))
+in Nightshift's **Providers** tab, and copy the runtime token from its **Console**.
+The NVIDIA key never goes in this project.
 
 ```dotenv
-RESOLVE_MODEL_MODE=compatible
-MODEL_BASE_URL=https://integrate.api.nvidia.com/v1
-MODEL_API_KEY=nvapi-...
-MODEL_NAME=nvidia/nemotron-3.5-super-vl-120b-a12b
-MODEL_TIMEOUT_SECONDS=60
+RESOLVE_MODEL_MODE=nightshift
+METERLESS_BASE_URL=http://127.0.0.1:8088/v1
+METERLESS_RUNTIME_TOKEN=...
+METERLESS_MODEL=nvidia/nemotron-3.5-lightning-30b-a3b
 ```
 
-Any OpenAI-compatible endpoint works the same way. Model calls retry once after a
-pause; a malformed or unavailable answer escalates rather than guessing.
+Resolve requests the Nemotron model explicitly rather than `meterless/auto`, and every
+model call is logged with the step, the provider, and the model that served it
+(`"role": "model"` events in `--trace` output). Resolve asks Nemotron to answer without extended
+thinking (`chat_template_kwargs.enable_thinking=false`): measured through Nightshift,
+that is about 2 seconds per call instead of 40+ seconds and empty answers.
+`scripts/probe_nightshift.py` reproduces the measurement. Calls retry once after a pause; a
+malformed or unavailable answer escalates rather than guessing.
 
 ### 2. Zetaris
 
@@ -235,7 +247,7 @@ retrying with a new ID.
 | [docs/evidence/live_run_zetaris_nemotron.txt](docs/evidence/live_run_zetaris_nemotron.txt) | Four scenarios run through live Zetaris and Nemotron, with full event trails |
 | `logs/world.jsonl`, `logs/run_manifest.jsonl` | World Model entities, relationships, decisions, and wired services (written at run time) |
 | `logs/memory_audit.jsonl` | H-MEM writes per run (written at run time) |
-| `tests/` | 40 tests: outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
+| `tests/` | 48 tests (Meterless engines: `tests/test_meterless.py`; Nightshift: `tests/test_nightshift.py`): outcomes, verification gates, API failures, model misbehavior, memory, plain-language questions |
 
 ## Project layout
 

@@ -50,17 +50,24 @@
             "conflict resolution"
           ]
         }
-      }
+      },
+      "nightshift": {
+        "used": true,
+        "role": "primary AI provider",
+        "where": "resolve/reasoning.py (CompatibleReasoner.from_nightshift), tests/test_nightshift.py",
+        "how": "All model calls go to Nightshift's OpenAI-format endpoint with the runtime token and meterless-app/meterless-scope headers; the NVIDIA key is configured in Nightshift's Providers tab, not in the app. Each call logs the step, provider and serving model."
+      },
+      "engine_tests": "tests/test_meterless.py"
     },
     "nvidia": {
       "used": true,
-      "model": "nvidia/nemotron-3-super-120b-a12b via build.nvidia.com (OpenAI-compatible)",
-      "where": "resolve/reasoning.py (CompatibleReasoner)",
-      "how": "Nemotron proposes the outcome and independently audits it; a hard verifier still checks every claim against source rows."
+      "model": "nvidia/nemotron-3.5-lightning-30b-a3b, through Meterless Nightshift",
+      "where": "resolve/reasoning.py",
+      "how": "Nemotron does triage, proposes the outcome and independently audits it; a hard verifier still checks every claim against source rows. Logs record the serving model per request."
     },
     "cursor": {
-      "used": true,
-      "how": "TODO before submitting: describe how Cursor was used and add screenshots to docs/evidence. Do not leave this claim unverified."
+      "used": "optional",
+      "how": "TODO: describe if you used Cursor; otherwise remove this entry."
     }
   }
 }

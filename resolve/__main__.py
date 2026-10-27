@@ -17,9 +17,15 @@ from .zetaris import make_researcher
 
 def build_agent(database: Path, actions) -> Agent:
     mode = os.getenv("RESOLVE_MODEL_MODE", "rules")
-    if mode not in {"rules", "compatible"}:
-        raise ValueError("RESOLVE_MODEL_MODE must be rules or compatible")
-    reasoner = RulesReasoner() if mode == "rules" else CompatibleReasoner.from_env()
+    if os.getenv("SAMPLE_MODE", "false").lower() == "true":
+        # Judge-friendly: no Zetaris, Nightshift, network or credentials.
+        mode = "rules"
+        os.environ["RESOLVE_RESEARCH"] = "local"
+    if mode not in {"rules", "nightshift", "compatible"}:
+        raise ValueError("RESOLVE_MODEL_MODE must be rules, nightshift or compatible")
+    reasoner = (RulesReasoner() if mode == "rules"
+                else CompatibleReasoner.from_nightshift() if mode == "nightshift"
+                else CompatibleReasoner.from_env())
     # With a model, research returns every component/version-scoped row and Nemotron
     # judges relevance; the rules baseline keeps keyword filtering.
     return Agent(make_researcher(database, symptom_filter=mode == "rules"), reasoner, actions,
@@ -96,6 +102,8 @@ def main() -> int:
         run_bot(database, live=args.live)
         return 0
     actions = DryRunActions()
+    if args.live and os.getenv("SAMPLE_MODE", "false").lower() == "true":
+        raise ValueError("SAMPLE_MODE=true never performs live actions; unset it to use --live")
     if args.live:
         channel = os.getenv("DISCORD_SUPPORT_CHANNEL_ID", "")
         actions = JournalActions(LiveActions.from_env(channel), runtime_dir() / "actions.sqlite")

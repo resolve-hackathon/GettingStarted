@@ -20,6 +20,11 @@ ANSWERS = {
                          {"evidence_id": "releases:3.8.2-upload", "field": "body", "value": "upload worker changed"},
                          {"evidence_id": "releases:3.8.2-upload", "field": "regression_signals"}]},
     "c-004": {"action": "escalate", "confidence": 0, "selected_id": None, "supporting_ids": [], "claims": []},
+    # Garbled selected_id: recovered from the remedy claim's row.
+    "c-003-garbled": {"action": "open_issue", "confidence": 0.9, "selected_id": "releases:3.8.2",
+              "supporting_ids": [],
+              "claims": [{"evidence_id": "accounts:c-003", "field": "client_version"},
+                         {"evidence_id": "releases:3.8.2-upload", "field": "body"}]},
     # Pointer to a field that does not exist must still be rejected.
     "c-002-bad": {"action": "post_fix", "confidence": 0.9, "selected_id": "kb:KB-002", "supporting_ids": [],
               "claims": [{"evidence_id": "accounts:c-002", "field": "client_version"},
@@ -57,6 +62,11 @@ class ModelClaimPointerTests(unittest.TestCase):
         for customer, case, message, expected in cases:
             with self.subTest(case=case):
                 self.assertEqual(self.run_case(customer, case, message).action.value, expected)
+
+    def test_garbled_selected_id_is_recovered_from_the_remedy_claim(self):
+        state = self.run_case("c-003", "c-003-garbled", "I can reproduce an upload crash after 3.8.2")
+        self.assertEqual(state.hypothesis.selected_id, "releases:3.8.2-upload")
+        self.assertEqual(state.action.value, "open_issue")
 
     def test_pointer_to_missing_field_is_rejected(self):
         state = self.run_case("c-002", "c-002-bad", "Why is my export blank?")

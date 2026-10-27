@@ -16,7 +16,10 @@ class Agent:
         state = TaskState(question_id, message, customer_id)
         triage(state)  # keyword baseline, also the fallback
         method = "keywords"
-        if hasattr(self.reasoner, "triage") and state.issue_type != "human_required":
+        # The model triages only when keywords cannot place the report: one call saved
+        # on most questions, plain-language reports still understood.
+        if hasattr(self.reasoner, "triage") and state.issue_type != "human_required" \
+                and state.component == "unknown":
             try:
                 self.reasoner.triage(state)
                 method = "model"
@@ -54,6 +57,10 @@ class Agent:
                 state.gaps, state.verified = gaps, not gaps
             except (ServiceError, ValueError, OSError) as error:
                 state.gaps = [f"Investigation unavailable ({type(error).__name__}: {str(error)[:160]})"]
+                state.record_event("verifier", verified=False, gaps=list(state.gaps))
+                if isinstance(error, ServiceError):
+                    break  # the model call already retried; a second research pass cannot help
+                continue
             state.record_event("verifier", verified=state.verified, gaps=list(state.gaps))
             if state.verified:
                 break

@@ -57,7 +57,7 @@ class PlainLanguageTests(unittest.TestCase):
     def test_no_keyword_question_is_triaged_by_model_and_resolved(self):
         model = FakeModel({"component": "sync", "issue_type": "technical"}, LINK_GH1)
         state = self.run_agent(model, "files aren't showing up on my other computer")
-        self.assertEqual(state.events[0]["method"], "model")
+        self.assertEqual(next(e for e in state.events if e["role"] == "triage")["method"], "model")
         self.assertIn("issues:GH-1", model.seen)
         self.assertEqual(state.action.value, "link_issue")
 
@@ -78,14 +78,21 @@ class PlainLanguageTests(unittest.TestCase):
 
     def test_bad_model_triage_falls_back_to_keywords(self):
         model = FakeModel({"component": "teleportation", "issue_type": "technical"}, LINK_GH1)
+        state = self.run_agent(model, "files aren't showing up on my other computer")
+        self.assertEqual(state.component, "unknown")
+        self.assertEqual(next(e for e in state.events if e["role"] == "triage")["method"], "keywords (model unavailable)")
+        self.assertEqual(state.action.value, "escalate")
+
+    def test_keywords_skip_the_model_triage_call(self):
+        model = FakeModel({"component": "login", "issue_type": "technical"}, LINK_GH1)
         state = self.run_agent(model, "my desktop app quit syncing")
         self.assertEqual(state.component, "sync")
-        self.assertEqual(state.events[0]["method"], "keywords (model unavailable)")
+        self.assertEqual(next(e for e in state.events if e["role"] == "triage")["method"], "keywords")
 
     def test_human_request_skips_model_triage(self):
         model = FakeModel({"component": "sync", "issue_type": "technical"}, LINK_GH1)
         state = self.run_agent(model, "I want a refund for my plan")
-        self.assertEqual(state.events[0]["method"], "keywords")
+        self.assertEqual(next(e for e in state.events if e["role"] == "triage")["method"], "keywords")
         self.assertEqual(state.action.value, "escalate")
 
 
