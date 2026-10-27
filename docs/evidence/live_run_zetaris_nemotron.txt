@@ -37,7 +37,7 @@
         ],
         "regression": false,
         "body": "The desktop sync worker was rewritten. A subset of Windows clients stop syncing\nafter upgrading; the synthetic issue fixture GH-182 tracks this regression.",
-        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+        "url": "https://github.com/resolve-hackathon/resolve-agent/blob/main/data/CHANGELOG.md"
       }
     },
     {
@@ -181,7 +181,7 @@
           "Set the date filter to All time and select Apply.",
           "Preview the rows, then export the file again."
         ],
-        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md"
+        "url": "https://github.com/resolve-hackathon/resolve-agent/blob/main/data/kb/002-blank-exports.md"
       }
     },
     {
@@ -198,7 +198,7 @@
         ],
         "regression": false,
         "body": "The exports panel remembers the previous date filter. An empty date range may\nproduce a blank export. KB-002 documents resetting the filter for 3.7.x.",
-        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+        "url": "https://github.com/resolve-hackathon/resolve-agent/blob/main/data/CHANGELOG.md"
       }
     }
   ],
@@ -237,10 +237,10 @@
     "planned": {
       "action": "post_fix",
       "payload": {},
-      "text": "1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md"
+      "text": "1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/resolve-agent/blob/main/data/kb/002-blank-exports.md"
     }
   },
-  "reply_text": "[DRY RUN: post_fix]\n1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/002-blank-exports.md",
+  "reply_text": "[DRY RUN: post_fix]\n1. Open Reports, then Exports.\n2. Set the date filter to All time and select Apply.\n3. Preview the rows, then export the file again.\n\nSource: [kb:KB-002] https://github.com/resolve-hackathon/resolve-agent/blob/main/data/kb/002-blank-exports.md",
   "events": [
     {
       "role": "triage",
@@ -328,7 +328,7 @@
           "Compare the file size with the remaining storage shown there.",
           "Ask a workspace administrator to review storage if the quota is full."
         ],
-        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/kb/003-upload-quota.md"
+        "url": "https://github.com/resolve-hackathon/resolve-agent/blob/main/data/kb/003-upload-quota.md"
       }
     },
     {
@@ -348,7 +348,7 @@
           "crash"
         ],
         "body": "The resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet.",
-        "url": "https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md"
+        "url": "https://github.com/resolve-hackathon/resolve-agent/blob/main/data/CHANGELOG.md"
       }
     }
   ],
@@ -383,7 +383,7 @@
       "action": "open_issue",
       "payload": {
         "title": "[Resolve] upload regression on 3.8.2",
-        "body": "Resolve report: cli-fdc34afc21864068831018a67a00ed9c\nComponent: upload\nClient: 3.8.2\n\n## Customer report (untrusted text)\nI can reproduce an upload crash after 3.8.2\n\nReproduction steps have not been independently reproduced; follow up with reporter.\n\n## Corroborating release note\nThe resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet.\n\nSource: [releases:3.8.2-upload] https://github.com/resolve-hackathon/GettingStarted/blob/main/data/CHANGELOG.md\nEvidence rows: accounts:c-003, releases:3.8.2-upload",
+        "body": "Resolve report: cli-fdc34afc21864068831018a67a00ed9c\nComponent: upload\nClient: 3.8.2\n\n## Customer report (untrusted text)\nI can reproduce an upload crash after 3.8.2\n\nReproduction steps have not been independently reproduced; follow up with reporter.\n\n## Corroborating release note\nThe resumable upload worker changed in 3.8.2. Internal synthetic QA reproduced an\nupload crash when resuming a paused transfer. No workaround is verified yet.\n\nSource: [releases:3.8.2-upload] https://github.com/resolve-hackathon/resolve-agent/blob/main/data/CHANGELOG.md\nEvidence rows: accounts:c-003, releases:3.8.2-upload",
         "labels": [
           "component:upload"
         ]
