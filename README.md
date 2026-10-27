@@ -87,8 +87,7 @@ flowchart LR
 | **Zetaris** | The four sources are four separate databases, registered as four Zetaris datasources. The researcher sends one federated statement over the Zetaris REST API. The query plan shows four independent scans with filters **pushed down to each source**: nothing is copied. | `resolve/zetaris.py`, `sql/research_zetaris.sql`, `zetaris/`, [query plan](docs/evidence/zetaris_query_plan.txt) |
 | **Meterless: World Model** | `WorldStoreService`, `IngestPipelineService`, `ContextBuilderService`. Every Zetaris row becomes an entity with provenance (source, row, via) and agent attribution (role, run, attempt), with typed relationships. The context builder's payload is what Nemotron reasons over. | `resolve/world_model.py`, `logs/world.jsonl`, `logs/run_manifest.jsonl` |
 | **Meterless: H-MEM** | `MemoryStoreService`, `MemoryRetrievalService`. Tiered memory with warm start and hybrid retrieval. Prior resolutions are injected into the model context, and a confirmed earlier report stops Resolve from commenting on the same issue twice. | `resolve/memory.py`, `logs/memory_audit.jsonl` |
-| **NVIDIA Nemotron** | `nvidia/nemotron-3-super-120b-a12b` on build.nvidia.com does triage, the hypothesis, and the independent verifier audit. | `resolve/reasoning.py` |
-| **Cursor** | _Fill in before submitting: how Cursor was used, with screenshots in `docs/evidence/`._ | `docs/evidence/` |
+| **NVIDIA Nemotron** | `nvidia/nemotron-3.5-super-vl-120b-a12b` on build.nvidia.com does triage, the hypothesis, and the independent verifier audit. | `resolve/reasoning.py` |
 
 Details for each integration, including what is not implemented:
 [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md). Machine-readable summary: [metadata.json](metadata.json).
